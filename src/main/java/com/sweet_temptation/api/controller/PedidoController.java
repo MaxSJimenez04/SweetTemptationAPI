@@ -37,17 +37,27 @@ public class PedidoController {
         }
     }
 
-    @PutMapping(path = "/")
+    @PostMapping(path = "/")
     public ResponseEntity<?> crearPedido(@RequestBody int idEmpleado){
         pedidoService.crearPedidoEmpleado(idEmpleado);
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
 
-    @PutMapping (path = "/estado")
+    @PutMapping (path = "/")
     public ResponseEntity<?> cancelarPedido(@RequestBody Pedido pedidoCancelar){
         try{
             PedidoDTO pedidoActualizado = pedidoService.cambiarEstadoPedido(pedidoCancelar, 3);
             return ResponseEntity.status(HttpStatus.OK).body(pedidoActualizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping(path = "/")
+    public ResponseEntity<?> eliminarPedido(@RequestBody Pedido pedidoEliminar){
+        try {
+            pedidoService.eliminarPedido(pedidoEliminar);
+            return ResponseEntity.status(HttpStatus.OK).body(null);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }

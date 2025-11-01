@@ -99,4 +99,12 @@ public class PedidoService {
         pedidoBD.setFechaCompra(Date.from(Instant.now()));
         pedidoRepository.save(pedidoBD);
     }
+
+    public void eliminarPedido(Pedido pedidoEliminar){
+        Pedido pedidoBD = pedidoRepository.getReferenceById(pedidoEliminar.getId());
+        if(pedidoBD == null){
+            throw new RuntimeException("Pedido no encontrado");
+        }
+        pedidoRepository.delete(pedidoBD);
+    }
 }
