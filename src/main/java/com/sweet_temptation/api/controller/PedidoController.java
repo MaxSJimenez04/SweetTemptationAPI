@@ -18,9 +18,9 @@ public class PedidoController {
     private PedidoService pedidoService;
 
     @GetMapping("/actual")
-    public ResponseEntity<?> getActual(@RequestParam int idcliente){
+    public ResponseEntity<?> getActual(@RequestParam int idCliente){
         try{
-            PedidoDTO pedidoActual = pedidoService.consultarPedidoActual(idcliente);
+            PedidoDTO pedidoActual = pedidoService.consultarPedidoActual(idCliente);
             return ResponseEntity.status(HttpStatus.OK).body(pedidoActual);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
@@ -28,9 +28,9 @@ public class PedidoController {
     }
 
     @GetMapping(path = "/pedidos")
-    public ResponseEntity<?> getActuales(@RequestParam int idcliente){
+    public ResponseEntity<?> getActuales(@RequestParam int idCliente){
         try{
-            List<PedidoDTO> listaPedidosActuales = pedidoService.consultarPedidosActuales(idcliente);
+            List<PedidoDTO> listaPedidosActuales = pedidoService.consultarPedidosActuales(idCliente);
             return ResponseEntity.status(HttpStatus.OK).body(listaPedidosActuales);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
@@ -44,18 +44,19 @@ public class PedidoController {
     }
 
     @PutMapping (path = "/")
-    public ResponseEntity<?> cancelarPedido(@RequestBody Pedido pedidoCancelar){
+    public ResponseEntity<?> cancelarPedido(@PathVariable int idPedido){
         try{
-            PedidoDTO pedidoActualizado = pedidoService.cambiarEstadoPedido(pedidoCancelar, 3);
+            PedidoDTO pedidoActualizado = pedidoService.cambiarEstadoPedido(idPedido, 3);
             return ResponseEntity.status(HttpStatus.OK).body(pedidoActualizado);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
+
     @DeleteMapping(path = "/")
-    public ResponseEntity<?> eliminarPedido(@RequestBody Pedido pedidoEliminar){
+    public ResponseEntity<?> eliminarPedido(@PathVariable int idPedido){
         try {
-            pedidoService.eliminarPedido(pedidoEliminar);
+            pedidoService.eliminarPedido(idPedido);
             return ResponseEntity.status(HttpStatus.OK).body(null);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
