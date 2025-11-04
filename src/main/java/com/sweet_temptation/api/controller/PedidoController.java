@@ -18,7 +18,7 @@ public class PedidoController {
     private PedidoService pedidoService;
 
     @GetMapping("/actual")
-    public ResponseEntity<?> getActual(@PathVariable int idcliente){
+    public ResponseEntity<?> getActual(@RequestParam int idcliente){
         try{
             PedidoDTO pedidoActual = pedidoService.consultarPedidoActual(idcliente);
             return ResponseEntity.status(HttpStatus.OK).body(pedidoActual);
@@ -28,7 +28,7 @@ public class PedidoController {
     }
 
     @GetMapping(path = "/pedidos")
-    public ResponseEntity<?> getActuales(@RequestBody int idcliente){
+    public ResponseEntity<?> getActuales(@RequestParam int idcliente){
         try{
             List<PedidoDTO> listaPedidosActuales = pedidoService.consultarPedidosActuales(idcliente);
             return ResponseEntity.status(HttpStatus.OK).body(listaPedidosActuales);
