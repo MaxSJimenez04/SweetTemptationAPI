@@ -18,7 +18,7 @@ public class PedidoController {
     private PedidoService pedidoService;
 
     @GetMapping("/actual")
-    public ResponseEntity<?> getActual(@RequestBody int idcliente){
+    public ResponseEntity<?> getActual(@PathVariable int idcliente){
         try{
             PedidoDTO pedidoActual = pedidoService.consultarPedidoActual(idcliente);
             return ResponseEntity.status(HttpStatus.OK).body(pedidoActual);
@@ -52,7 +52,6 @@ public class PedidoController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
-
     @DeleteMapping(path = "/")
     public ResponseEntity<?> eliminarPedido(@RequestBody Pedido pedidoEliminar){
         try {
