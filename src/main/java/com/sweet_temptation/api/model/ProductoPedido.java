@@ -22,6 +22,9 @@ public class ProductoPedido {
     @Column(nullable = false)
     private int idProducto;
 
+    @Column(precision = 9, scale = 2)
+    private BigDecimal precioVenta;
+
     public int getId() {
         return id;
     }
@@ -60,5 +63,13 @@ public class ProductoPedido {
 
     public void setIdProducto(int idProducto) {
         this.idProducto = idProducto;
+    }
+
+    public BigDecimal getPrecioVenta() {
+        return precioVenta;
+    }
+
+    public void setPrecioVenta(BigDecimal precioVenta) {
+        this.precioVenta = precioVenta;
     }
 }
