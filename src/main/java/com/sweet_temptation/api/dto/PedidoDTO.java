@@ -1,18 +1,19 @@
 package com.sweet_temptation.api.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class PedidoDTO {
     int id;
-    Date fechaCompra;
+    LocalDateTime fechaCompra;
     Boolean actual;
     BigDecimal total;
     int estado;
     Boolean personalizado;
     int idCliente;
 
-    public PedidoDTO(int id, Date fechaCompra, Boolean actual, BigDecimal total, int estado, Boolean personalizado, int idCliente) {
+    public PedidoDTO(int id, LocalDateTime fechaCompra, Boolean actual, BigDecimal total, int estado, Boolean personalizado, int idCliente) {
         this.id = id;
         this.fechaCompra = fechaCompra;
         this.actual = actual;
@@ -30,11 +31,11 @@ public class PedidoDTO {
         this.id = id;
     }
 
-    public Date getFechaCompra() {
+    public LocalDateTime getFechaCompra() {
         return fechaCompra;
     }
 
-    public void setFechaCompra(Date fechaCompra) {
+    public void setFechaCompra(LocalDateTime fechaCompra) {
         this.fechaCompra = fechaCompra;
     }
 
