@@ -2,6 +2,7 @@ package com.sweet_temptation.api.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -18,9 +19,11 @@ public class ImagenProducto {
     @Column(nullable = false)
     private int idArchivo;
 
-    private Date fechaRegistro;
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime fechaRegistro;
 
-    private Date fechaAsociacion;
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime fechaAsociacion;
 
     public int getId() {
         return id;
@@ -46,19 +49,19 @@ public class ImagenProducto {
         this.idArchivo = idArchivo;
     }
 
-    public Date getFechaRegistro() {
+    public LocalDateTime getFechaRegistro() {
         return fechaRegistro;
     }
 
-    public void setFechaRegistro(Date fechaRegistro) {
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
     }
 
-    public Date getFechaAsociacion() {
+    public LocalDateTime getFechaAsociacion() {
         return fechaAsociacion;
     }
 
-    public void setFechaAsociacion(Date fechaAsociacion) {
+    public void setFechaAsociacion(LocalDateTime fechaAsociacion) {
         this.fechaAsociacion = fechaAsociacion;
     }
 }

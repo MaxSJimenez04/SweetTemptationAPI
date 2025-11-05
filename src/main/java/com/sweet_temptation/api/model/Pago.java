@@ -3,6 +3,7 @@ package com.sweet_temptation.api.model;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -16,7 +17,8 @@ public class Pago {
     @Column(precision = 9, scale = 2, nullable = false)
     private BigDecimal total;
 
-    private Date fechaPago;
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime fechaPago;
 
     @Column(length = 25)
     private String tipoPago;
@@ -43,11 +45,11 @@ public class Pago {
         this.total = total;
     }
 
-    public Date getFechaPago() {
+    public LocalDateTime getFechaPago() {
         return fechaPago;
     }
 
-    public void setFechaPago(Date fechaPago) {
+    public void setFechaPago(LocalDateTime fechaPago) {
         this.fechaPago = fechaPago;
     }
 

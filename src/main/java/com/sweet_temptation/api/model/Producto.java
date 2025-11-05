@@ -3,6 +3,7 @@ package com.sweet_temptation.api.model;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -25,8 +26,12 @@ public class Producto {
     private Boolean disponible;
 
     private int unidades;
-    private Date fechaRegistro;
-    private Date fechaModificacion;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime fechaRegistro;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime fechaModificacion;
 
     @Column(nullable = false)
     private int categoria;
@@ -79,19 +84,19 @@ public class Producto {
         this.unidades = unidades;
     }
 
-    public Date getFechaRegistro() {
+    public LocalDateTime getFechaRegistro() {
         return fechaRegistro;
     }
 
-    public void setFechaRegistro(Date fechaRegistro) {
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
     }
 
-    public Date getFechaModificacion() {
+    public LocalDateTime getFechaModificacion() {
         return fechaModificacion;
     }
 
-    public void setFechaModificacion(Date fechaModificacion) {
+    public void setFechaModificacion(LocalDateTime fechaModificacion) {
         this.fechaModificacion = fechaModificacion;
     }
 

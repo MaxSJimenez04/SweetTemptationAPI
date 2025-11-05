@@ -2,6 +2,7 @@ package com.sweet_temptation.api.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -29,8 +30,11 @@ public class PedidoPersonalizado {
     @Column(length = 100)
     private String especificaciones;
 
-    private Date fechaCompra;
-    private Date fechaSolicitud;
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime fechaCompra;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime fechaSolicitud;
 
     public int getId() {
         return id;
@@ -88,19 +92,19 @@ public class PedidoPersonalizado {
         this.especificaciones = especificaciones;
     }
 
-    public Date getFechaCompra() {
+    public LocalDateTime getFechaCompra() {
         return fechaCompra;
     }
 
-    public void setFechaCompra(Date fechaCompra) {
+    public void setFechaCompra(LocalDateTime fechaCompra) {
         this.fechaCompra = fechaCompra;
     }
 
-    public Date getFechaSolicitud() {
+    public LocalDateTime getFechaSolicitud() {
         return fechaSolicitud;
     }
 
-    public void setFechaSolicitud(Date fechaSolicitud) {
+    public void setFechaSolicitud(LocalDateTime fechaSolicitud) {
         this.fechaSolicitud = fechaSolicitud;
     }
 }

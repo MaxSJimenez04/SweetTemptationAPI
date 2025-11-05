@@ -2,6 +2,7 @@ package com.sweet_temptation.api.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -12,7 +13,8 @@ public class Archivo {
     @Column(name = "id")
     private int id;
 
-    private Date fechaRegistro;
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime fechaRegistro;
 
     @Column(length = 10)
     private String extension;
@@ -28,11 +30,11 @@ public class Archivo {
         this.id = id;
     }
 
-    public Date getFechaRegistro() {
+    public LocalDateTime getFechaRegistro() {
         return fechaRegistro;
     }
 
-    public void setFechaRegistro(Date fechaRegistro) {
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
     }
 
