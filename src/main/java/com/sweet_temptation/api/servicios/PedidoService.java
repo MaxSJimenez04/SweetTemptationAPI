@@ -77,8 +77,8 @@ public class PedidoService {
     }
 
 
-    public PedidoDTO cambiarEstadoPedido(Pedido pedido, int estado){
-        Pedido pedidoBD = pedidoRepository.getReferenceById(pedido.getId());
+    public PedidoDTO cambiarEstadoPedido(int idPedido, int estado){
+        Pedido pedidoBD = pedidoRepository.getReferenceById(idPedido);
         if(pedidoBD == null){
             throw new RuntimeException("Pedido no encontrado");
         }
@@ -89,19 +89,19 @@ public class PedidoService {
     }
 
     //TODO: Implementar al completar el pago
-    public void completarPedido(Pedido pedidoPagado){
-        Pedido pedidoBD = pedidoRepository.getReferenceById(pedidoPagado.getId());
+    public void completarPedido(int idPedidoPagado){
+        Pedido pedidoBD = pedidoRepository.getReferenceById(idPedidoPagado);
         if(pedidoBD == null){
             throw new RuntimeException("Pedido no encontrado");
         }
-        pedidoBD.setActual(pedidoPagado.getActual());
+        pedidoBD.setActual(false);
         pedidoBD.setEstado(3);
         pedidoBD.setFechaCompra(Date.from(Instant.now()));
         pedidoRepository.save(pedidoBD);
     }
 
-    public void eliminarPedido(Pedido pedidoEliminar){
-        Pedido pedidoBD = pedidoRepository.getReferenceById(pedidoEliminar.getId());
+    public void eliminarPedido(int idPedidoEliminar){
+        Pedido pedidoBD = pedidoRepository.getReferenceById(idPedidoEliminar);
         if(pedidoBD == null){
             throw new RuntimeException("Pedido no encontrado");
         }
