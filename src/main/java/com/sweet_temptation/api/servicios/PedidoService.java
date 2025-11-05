@@ -5,6 +5,7 @@ import com.sweet_temptation.api.model.Pedido;
 import com.sweet_temptation.api.repository.PedidoRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -48,12 +49,14 @@ public class PedidoService {
         return pedidosActual;
     }
 
-    //TODO: Implementarlo en PagoCliente
     public void crearPedidoCliente(int idCliente){
         Pedido pedidoNuevo = new Pedido();
         pedidoNuevo.setIdCliente(idCliente);
         pedidoNuevo.setPersonalizado(false);
+        pedidoNuevo.setActual(true);
         pedidoNuevo.setEstado(2);
+        pedidoNuevo.setTotal(BigDecimal.ZERO);
+        pedidoNuevo.setFechaCompra(LocalDateTime.now());
         pedidoRepository.save(pedidoNuevo);
     }
 
@@ -62,6 +65,8 @@ public class PedidoService {
         pedidoNuevo.setIdCliente(idEmpleado);
         pedidoNuevo.setPersonalizado(false);
         pedidoNuevo.setEstado(1);
+        pedidoNuevo.setTotal(BigDecimal.ZERO);
+        pedidoNuevo.setFechaCompra(LocalDateTime.now());
         pedidoRepository.save(pedidoNuevo);
     }
 
@@ -77,15 +82,14 @@ public class PedidoService {
     }
 
 
-    public PedidoDTO cambiarEstadoPedido(int idPedido, int estado){
+    public void cancelarPedido(int idPedido, int idCliente){
         Pedido pedidoBD = pedidoRepository.getReferenceById(idPedido);
         if(pedidoBD == null){
             throw new RuntimeException("Pedido no encontrado");
         }
-        pedidoBD.setEstado(estado);
+        pedidoBD.setEstado(4);
+        pedidoBD.setActual(false);
         pedidoRepository.save(pedidoBD);
-        return new PedidoDTO(pedidoBD.getId(), pedidoBD.getFechaCompra(), pedidoBD.getActual(),
-                pedidoBD.getTotal(), pedidoBD.getEstado(), pedidoBD.getPersonalizado(), pedidoBD.getIdCliente());
     }
 
     //TODO: Implementar al completar el pago
@@ -96,7 +100,7 @@ public class PedidoService {
         }
         pedidoBD.setActual(false);
         pedidoBD.setEstado(3);
-        pedidoBD.setFechaCompra(Date.from(Instant.now()));
+        pedidoBD.setFechaCompra(LocalDateTime.now());
         pedidoRepository.save(pedidoBD);
     }
 

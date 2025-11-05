@@ -1,8 +1,10 @@
 package com.sweet_temptation.api.model;
 
 import jakarta.persistence.*;
+import org.springframework.cglib.core.Local;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -13,7 +15,8 @@ public class Pedido {
     @Column(name = "id")
     private int id;
 
-    private Date fechaCompra;
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime fechaCompra;
 
     @Column(nullable = false)
     private Boolean actual;
@@ -38,11 +41,11 @@ public class Pedido {
         this.id = id;
     }
 
-    public Date getFechaCompra() {
+    public LocalDateTime getFechaCompra() {
         return fechaCompra;
     }
 
-    public void setFechaCompra(Date fechaCompra) {
+    public void setFechaCompra(LocalDateTime fechaCompra) {
         this.fechaCompra = fechaCompra;
     }
 

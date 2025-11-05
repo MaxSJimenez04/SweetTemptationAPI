@@ -38,16 +38,22 @@ public class PedidoController {
     }
 
     @PostMapping(path = "/")
-    public ResponseEntity<?> crearPedido(@RequestBody int idEmpleado){
+    public ResponseEntity<?> crearPedidoEmpleado(@RequestParam int idEmpleado){
         pedidoService.crearPedidoEmpleado(idEmpleado);
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
 
+    @PostMapping(path = "/nuevo")
+    public ResponseEntity<?> crearPedido(@RequestParam int idCliente){
+        pedidoService.crearPedidoCliente(idCliente);
+        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+    }
+
     @PutMapping (path = "/")
-    public ResponseEntity<?> cancelarPedido(@PathVariable int idPedido){
+    public ResponseEntity<?> cancelarPedido(@RequestParam int idPedido, @RequestParam int idCliente){
         try{
-            PedidoDTO pedidoActualizado = pedidoService.cambiarEstadoPedido(idPedido, 3);
-            return ResponseEntity.status(HttpStatus.OK).body(pedidoActualizado);
+            pedidoService.cancelarPedido(idPedido, idCliente);
+            return ResponseEntity.status(HttpStatus.OK).body(null);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
