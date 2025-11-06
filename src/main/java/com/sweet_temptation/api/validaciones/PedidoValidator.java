@@ -1,10 +1,11 @@
 package com.sweet_temptation.api.validaciones;
 
 import com.sweet_temptation.api.model.Pedido;
+import org.springframework.stereotype.Component;
 
-import java.rmi.NoSuchObjectException;
 import java.util.NoSuchElementException;
 
+@Component
 public class PedidoValidator {
     public void validarIDCliente(int idCliente){
         if (idCliente <= 0) {
