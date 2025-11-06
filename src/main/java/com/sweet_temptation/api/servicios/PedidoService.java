@@ -3,6 +3,7 @@ package com.sweet_temptation.api.servicios;
 import com.sweet_temptation.api.dto.PedidoDTO;
 import com.sweet_temptation.api.model.Pedido;
 import com.sweet_temptation.api.repository.PedidoRepository;
+import com.sweet_temptation.api.validaciones.PedidoValidator;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -11,32 +12,35 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class PedidoService {
     private final PedidoRepository pedidoRepository;
+    private final PedidoValidator validaciones;
 
 
-    public PedidoService(PedidoRepository pedidoRepository) {
+    public PedidoService(PedidoRepository pedidoRepository,  PedidoValidator validaciones) {
         this.pedidoRepository = pedidoRepository;
+        this.validaciones = validaciones;
     }
 
     //Consultar pedido actual del cliente
     public PedidoDTO consultarPedidoActual(int idCliente) {
+        validaciones.validarIDCliente(idCliente);
         Pedido pedidoBD = pedidoRepository.findByActualTrueAndIdCliente(idCliente);
-        if( pedidoBD == null){
-            throw new RuntimeException("Pedido no encontrado");
-        }
+        validaciones.validarPedido(pedidoBD);
         return new PedidoDTO(pedidoBD.getId(), pedidoBD.getFechaCompra(), pedidoBD.getActual(),
                 pedidoBD.getTotal(), pedidoBD.getEstado(), pedidoBD.getPersonalizado(), pedidoBD.getIdCliente());
     }
 
     //Consultar pedidos en curso del empleado
     public List<PedidoDTO> consultarPedidosActuales(int idCliente){
+        validaciones.validarIDCliente(idCliente);
         List<Pedido> pedidosBD = pedidoRepository.findByIdClienteAndEstado(idCliente, 2);
 
         if(pedidosBD == null){
-            throw new RuntimeException("No se encontraron pedidos");
+            throw new NoSuchElementException("No se encontraron pedidos");
         }
 
         List<PedidoDTO> pedidosActual = new ArrayList<>();
@@ -50,6 +54,7 @@ public class PedidoService {
     }
 
     public void crearPedidoCliente(int idCliente){
+        validaciones.validarIDCliente(idCliente);
         Pedido pedidoNuevo = new Pedido();
         pedidoNuevo.setIdCliente(idCliente);
         pedidoNuevo.setPersonalizado(false);
@@ -62,6 +67,7 @@ public class PedidoService {
 
     public void crearPedidoEmpleado(int idEmpleado){
         Pedido pedidoNuevo = new Pedido();
+        validaciones.validarIDCliente(idEmpleado);
         pedidoNuevo.setIdCliente(idEmpleado);
         pedidoNuevo.setPersonalizado(false);
         pedidoNuevo.setEstado(1);
@@ -73,20 +79,16 @@ public class PedidoService {
 
     public PedidoDTO cambiarTotalPedido(Pedido pedido){
         Pedido pedidoBD = pedidoRepository.getReferenceById(pedido.getId());
-        if(pedidoBD == null){
-            throw new RuntimeException("Pedido no encontrado");
-        }
+        validaciones.validarPedido(pedidoBD);
         pedidoBD.setTotal(pedido.getTotal());
         return new PedidoDTO(pedidoBD.getId(), pedidoBD.getFechaCompra(), pedidoBD.getActual(),
         pedidoBD.getTotal(), pedidoBD.getEstado(), pedidoBD.getPersonalizado(), pedidoBD.getIdCliente());
     }
 
 
-    public void cancelarPedido(int idPedido, int idCliente){
+    public void cancelarPedido(int idPedido){
         Pedido pedidoBD = pedidoRepository.getReferenceById(idPedido);
-        if(pedidoBD == null){
-            throw new RuntimeException("Pedido no encontrado");
-        }
+        validaciones.validarPedido(pedidoBD);
         pedidoBD.setEstado(4);
         pedidoBD.setActual(false);
         pedidoRepository.save(pedidoBD);
@@ -94,10 +96,9 @@ public class PedidoService {
 
     //TODO: Implementar al completar el pago
     public void completarPedido(int idPedidoPagado){
+        validaciones.validarIDPedido(idPedidoPagado);
         Pedido pedidoBD = pedidoRepository.getReferenceById(idPedidoPagado);
-        if(pedidoBD == null){
-            throw new RuntimeException("Pedido no encontrado");
-        }
+        validaciones.validarPedido(pedidoBD);
         pedidoBD.setActual(false);
         pedidoBD.setEstado(3);
         pedidoBD.setFechaCompra(LocalDateTime.now());
@@ -105,10 +106,9 @@ public class PedidoService {
     }
 
     public void eliminarPedido(int idPedidoEliminar){
+        validaciones.validarIDPedido(idPedidoEliminar);
         Pedido pedidoBD = pedidoRepository.getReferenceById(idPedidoEliminar);
-        if(pedidoBD == null){
-            throw new RuntimeException("Pedido no encontrado");
-        }
+        validaciones.validarPedido(pedidoBD);
         pedidoRepository.delete(pedidoBD);
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping(path = "/pedido")
@@ -22,8 +23,10 @@ public class PedidoController {
         try{
             PedidoDTO pedidoActual = pedidoService.consultarPedidoActual(idCliente);
             return ResponseEntity.status(HttpStatus.OK).body(pedidoActual);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (IllegalArgumentException iae) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
+        }catch(NoSuchElementException nsee){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
         }
     }
 
@@ -32,30 +35,43 @@ public class PedidoController {
         try{
             List<PedidoDTO> listaPedidosActuales = pedidoService.consultarPedidosActuales(idCliente);
             return ResponseEntity.status(HttpStatus.OK).body(listaPedidosActuales);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (NoSuchElementException nsee){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
         }
     }
 
     @PostMapping(path = "/")
     public ResponseEntity<?> crearPedidoEmpleado(@RequestParam int idEmpleado){
-        pedidoService.crearPedidoEmpleado(idEmpleado);
-        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        try{
+            pedidoService.crearPedidoEmpleado(idEmpleado);
+            return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        }catch (IllegalArgumentException iae){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
+        }
+
     }
 
     @PostMapping(path = "/nuevo")
     public ResponseEntity<?> crearPedido(@RequestParam int idCliente){
-        pedidoService.crearPedidoCliente(idCliente);
-        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        try{
+            pedidoService.crearPedidoCliente(idCliente);
+            return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        }catch (IllegalArgumentException iae){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
+        }
     }
 
     @PutMapping (path = "/")
     public ResponseEntity<?> cancelarPedido(@RequestParam int idPedido, @RequestParam int idCliente){
         try{
-            pedidoService.cancelarPedido(idPedido, idCliente);
+            pedidoService.cancelarPedido(idPedido);
             return ResponseEntity.status(HttpStatus.OK).body(null);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (NoSuchElementException nsee){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
         }
     }
 
@@ -64,8 +80,10 @@ public class PedidoController {
         try {
             pedidoService.eliminarPedido(idPedido);
             return ResponseEntity.status(HttpStatus.OK).body(null);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (NoSuchElementException nsee){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
         }
     }
 }
