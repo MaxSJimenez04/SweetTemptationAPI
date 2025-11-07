@@ -1,5 +1,5 @@
-name: CI Construccion API
-run-name: Construcción API
+name: ContinuousIntegration API
+run-name: CI API
 
 on:
   push:
@@ -11,7 +11,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout
+        uses: actions/checkout@v5
 
       - name: Configurar JDK 21
         uses: actions/setup-java@v5
@@ -19,5 +20,20 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Build with Maven
-        run: mvn clean verify
+      - name: Construir y ejecutar pruebas
+        run: mvn clean verify --no-transfer-progress
+
+      - name: Guardar resultados de pruebas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+            name: pruebas-result
+            path: target/sunfire-reports/*.xml
+
+      - name: Reporte de pruebas
+        uses: dorny/test-reporter@v2
+        if: ${{ !cancelled() }}
+        with:
+          name: JUnit Tests
+          path: target/sunfire-reports/*.xml
+          reporter: java-junit
