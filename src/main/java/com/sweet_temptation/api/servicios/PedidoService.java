@@ -65,7 +65,7 @@ public class PedidoService {
         pedidoRepository.save(pedidoNuevo);
     }
 
-    public void crearPedidoEmpleado(int idEmpleado){
+    public PedidoDTO crearPedidoEmpleado(int idEmpleado){
         Pedido pedidoNuevo = new Pedido();
         validaciones.validarIDCliente(idEmpleado);
         pedidoNuevo.setIdCliente(idEmpleado);
@@ -73,20 +73,28 @@ public class PedidoService {
         pedidoNuevo.setEstado(1);
         pedidoNuevo.setTotal(BigDecimal.ZERO);
         pedidoNuevo.setFechaCompra(LocalDateTime.now());
-        pedidoRepository.save(pedidoNuevo);
+        Pedido pedidoBD = pedidoRepository.save(pedidoNuevo);
+        validaciones.validarPedido(pedidoBD);
+        return new PedidoDTO(pedidoNuevo.getId(), pedidoNuevo.getFechaCompra(), pedidoNuevo.getActual(),
+                pedidoNuevo.getTotal(), pedidoNuevo.getEstado(), pedidoNuevo.getPersonalizado(),
+                pedidoNuevo.getIdCliente());
     }
 
-
-    public PedidoDTO cambiarTotalPedido(Pedido pedido){
-        Pedido pedidoBD = pedidoRepository.getReferenceById(pedido.getId());
+    //TODO: Implementar en ProductoPedido
+    public PedidoDTO cambiarTotalPedido(int idPedido, BigDecimal total){
+        validaciones.validarIDPedido(idPedido);
+        Pedido pedidoBD = pedidoRepository.getReferenceById(idPedido);
         validaciones.validarPedido(pedidoBD);
-        pedidoBD.setTotal(pedido.getTotal());
-        return new PedidoDTO(pedidoBD.getId(), pedidoBD.getFechaCompra(), pedidoBD.getActual(),
-        pedidoBD.getTotal(), pedidoBD.getEstado(), pedidoBD.getPersonalizado(), pedidoBD.getIdCliente());
+        pedidoBD.setTotal(total);
+        Pedido pedidoActualizado = pedidoRepository.save(pedidoBD);
+        return new PedidoDTO(pedidoActualizado.getId(), pedidoActualizado.getFechaCompra(), pedidoActualizado.getActual(),
+                pedidoActualizado.getTotal(), pedidoActualizado.getEstado(), pedidoActualizado.getPersonalizado(),
+                pedidoActualizado.getIdCliente());
     }
 
 
     public void cancelarPedido(int idPedido){
+        validaciones.validarIDPedido(idPedido);
         Pedido pedidoBD = pedidoRepository.getReferenceById(idPedido);
         validaciones.validarPedido(pedidoBD);
         pedidoBD.setEstado(4);
