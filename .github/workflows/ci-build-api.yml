@@ -1,4 +1,4 @@
-name: ContinuousIntegration API
+name: Continuous Integration API
 run-name: CI API
 
 on:
@@ -28,12 +28,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
             name: pruebas-result
-            path: target/sunfire-reports/*.xml
+            path: target/surefire-reports/*.xml
 
       - name: Reporte de pruebas
         uses: dorny/test-reporter@v2
         if: ${{ !cancelled() }}
         with:
           name: JUnit Tests
-          path: target/sunfire-reports/*.xml
+          path: target/surefire-reports/*.xml
           reporter: java-junit
