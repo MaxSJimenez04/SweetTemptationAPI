@@ -64,7 +64,7 @@ public class PedidoController {
     }
 
     @PutMapping (path = "/")
-    public ResponseEntity<?> cancelarPedido(@RequestParam int idPedido, @RequestParam int idCliente){
+    public ResponseEntity<?> cancelarPedido(@RequestParam int idPedido){
         try{
             pedidoService.cancelarPedido(idPedido);
             return ResponseEntity.status(HttpStatus.OK).body(null);
