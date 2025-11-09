@@ -1,28 +1,25 @@
 package com.sweet_temptation.api.dto;
 
-import org.springframework.cglib.core.Local;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class ProductoDTO {
     int id;
     String nombre;
     String descripcion;
-    double precio;
-    int dispobible;
+    BigDecimal precio;
+    int disponible;
     int unidades;
     LocalDateTime fechaRegistro;
     LocalDateTime fechaModificacion;
     int categoria;
 
-    public ProductoDTO(int id, String nombre, String descripcion, double precio,int dispobible, int unidades, LocalDateTime fechaRegistro, LocalDateTime fechaModificacion, int categoria ){
+    public ProductoDTO(int id, String nombre, String descripcion, BigDecimal precio,int disponible, int unidades, LocalDateTime fechaRegistro, LocalDateTime fechaModificacion, int categoria ){
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
-        this.dispobible = dispobible;
+        this.disponible = disponible;
         this.unidades = unidades;
         this.fechaRegistro = fechaRegistro;
         this.fechaModificacion = fechaModificacion;
@@ -35,9 +32,9 @@ public class ProductoDTO {
 
     public String getDescripcion() { return descripcion; }
 
-    public double getPrecio() { return precio; }
+    public BigDecimal getPrecio() { return precio; }
 
-    public int getDispobible() { return dispobible; }
+    public int getDisponible() { return disponible; }
 
     public int getUnidades() { return unidades; }
 
@@ -54,9 +51,9 @@ public class ProductoDTO {
 
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-    public void setPrecio(double precio) { this.precio = precio; }
+    public void setPrecio(BigDecimal precio) { this.precio = precio; }
 
-    public void setDispobible(int dispobible) { this.dispobible = dispobible; }
+    public void setDisponible(int disponible) { this.disponible = disponible; }
 
     public void setUnidades(int unidades) { this.unidades = unidades; }
 
