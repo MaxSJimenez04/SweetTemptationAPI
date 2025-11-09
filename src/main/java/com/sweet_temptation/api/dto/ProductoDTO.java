@@ -26,6 +26,9 @@ public class ProductoDTO {
         this.categoria = categoria;
     }
 
+    public ProductoDTO(int id, String nombre, String descripcion, BigDecimal precio, Boolean disponible, int unidades, LocalDateTime fechaRegistro, LocalDateTime fechaModificacion) {
+    }
+
     public int getId() { return id; }
 
     public String getNombre() { return nombre; }
