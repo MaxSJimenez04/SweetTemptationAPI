@@ -7,6 +7,7 @@ import com.sweet_temptation.api.validaciones.ProductoValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,8 +66,9 @@ public class ProductoService {
     }
 
     public ProductoDTO actualizarProducto(int idProducto, ProductoDTO producto){
-        // TODO - Agregar validacion para el id del producto que se quiere modificar
-        Producto actual = productoRepository.findByID(idProducto).orElseThrow(() -> new NoSuchElementException("El producto no fue encontrado"));
+        validaciones.validarIDProducto(idProducto);
+        Producto actual = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new NoSuchElementException("Producto no encontrado: " + idProducto));
 
         // TODO - Agregar otra validacion para el producto actualizado
 
@@ -82,8 +84,48 @@ public class ProductoService {
         return  toDTO(actualizado);
     }
 
+    public ProductoDTO actualizarPrecio(int idProducto, BigDecimal precioNuevo){
+        validaciones.validarIDProducto(idProducto);
+        validaciones.validarPrecio(precioNuevo);
+
+        Producto producto = productoRepository.getReferenceById(idProducto);
+        validaciones.validarProducto(producto);
+
+        producto.setPrecio(precioNuevo);
+        producto.setFechaModificacion(LocalDateTime.now());
+
+        Producto actualizado = productoRepository.save(producto);
+        return toDTO(actualizado);
+    }
+
+    public ProductoDTO modificarInventario(int idProducto, int unidadesProducto){
+        validaciones.validarIDProducto(idProducto);
+        Producto producto = productoRepository.getReferenceById(idProducto);
+        validaciones.validarProducto(producto);
+
+        int nuevoStock = producto.getUnidades() + unidadesProducto;
+        validaciones.validarStock(unidadesProducto);
+
+        producto.setUnidades(nuevoStock);
+        producto.setFechaModificacion(LocalDateTime.now());
+
+        Producto actualizado = productoRepository.save(producto);
+        return toDTO(actualizado);
+    }
+
+    public ProductoDTO cambiarDisponibilidad(int idProducto, boolean disponible){
+        validaciones.validarIDProducto(idProducto);
+        Producto producto = productoRepository.getReferenceById(idProducto);
+        validaciones.validarProducto(producto);
+
+        producto.setDisponible(disponible ? 1 : 0);
+        producto.setFechaModificacion(LocalDateTime.now());
+
+        return toDTO(productoRepository.save(producto));
+    }
+
     public void eliminarProducto(int idProductoEliminar) {
-        // TODO - Agregar validacion para el id del producto
+        validaciones.validarIDProducto(idProductoEliminar);
         Producto p = productoRepository.getReferenceById(idProductoEliminar);
         validaciones.validarProducto(p);
         productoRepository.delete(p);
@@ -98,8 +140,8 @@ public class ProductoService {
                 producto.getDisponible(),
                 producto.getUnidades(),
                 producto.getFechaRegistro(),
-                producto.getFechaModificacion()
-                // TODO - agregar la categoria
+                producto.getFechaModificacion(),
+                producto.getIdCategoria()
         );
     }
 }

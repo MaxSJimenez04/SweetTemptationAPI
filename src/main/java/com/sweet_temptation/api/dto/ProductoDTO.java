@@ -26,7 +26,7 @@ public class ProductoDTO {
         this.categoria = categoria;
     }
 
-    public ProductoDTO(int id, String nombre, String descripcion, BigDecimal precio, Boolean disponible, int unidades, LocalDateTime fechaRegistro, LocalDateTime fechaModificacion) {
+    public ProductoDTO(int id, String nombre, String descripcion, BigDecimal precio, int disponible, int unidades, LocalDateTime fechaRegistro, LocalDateTime fechaModificacion) {
     }
 
     public int getId() { return id; }
