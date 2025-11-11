@@ -1,8 +1,11 @@
 package com.sweet_temptation.api.controller;
 
+import com.sweet_temptation.api.dto.DetallesProductoDTO;
 import com.sweet_temptation.api.dto.PedidoDTO;
+import com.sweet_temptation.api.dto.ProductoPedidoDTO;
 import com.sweet_temptation.api.model.Pedido;
 import com.sweet_temptation.api.servicios.PedidoService;
+import com.sweet_temptation.api.servicios.ProductoPedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,8 @@ import java.util.NoSuchElementException;
 public class PedidoController {
     @Autowired
     private PedidoService pedidoService;
+    @Autowired
+    private ProductoPedidoService productoPedidoService;
 
     @GetMapping("/actual")
     public ResponseEntity<?> getActual(@RequestParam int idCliente){
@@ -76,7 +81,7 @@ public class PedidoController {
     }
 
     @DeleteMapping(path = "/")
-    public ResponseEntity<?> eliminarPedido(@PathVariable int idPedido){
+    public ResponseEntity<?> eliminarPedido(@RequestParam int idPedido){
         try {
             pedidoService.eliminarPedido(idPedido);
             return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -84,6 +89,73 @@ public class PedidoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (NoSuchElementException nsee){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
+        }
+    }
+
+    //MÉTODOS PARA PRODUCTO PEDIDO
+
+    @PostMapping(path = "{id}/")
+    public ResponseEntity<?> crearProducto(@PathVariable int id, @RequestParam int idProducto,
+        @RequestParam int idPedido, @RequestParam int cantidad){
+            try{
+                ProductoPedidoDTO respuesta = productoPedidoService.agregarProducto(idProducto, idPedido, cantidad);
+                return ResponseEntity.status(HttpStatus.OK).body(respuesta);
+            }catch (IllegalArgumentException iae){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
+            }catch(NoSuchElementException nsee){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
+            }catch(RuntimeException re){
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(re.getMessage());
+            }
+    }
+
+
+    @PutMapping(path = "{id}/")
+    public ResponseEntity<?> actualizarProducto(@PathVariable int id, @RequestBody ProductoPedidoDTO productoActualizado){
+        try {
+            ProductoPedidoDTO respuesta = productoPedidoService.actualizarProducto(productoActualizado.getId(),
+                    productoActualizado.getCantidad());
+            return ResponseEntity.status(HttpStatus.OK).body(respuesta);
+        }catch(IllegalArgumentException iae){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
+        }catch (ArrayIndexOutOfBoundsException aoie) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(aoie.getMessage());
+        }catch(RuntimeException rte ){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(rte.getMessage());
+        }
+    }
+
+    @DeleteMapping(path = "{id}/")
+    public ResponseEntity<?> eliminarProducto(@PathVariable int id, @RequestParam int idProducto) {
+        try {
+            productoPedidoService.eliminarProducto(idProducto);
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }catch(IllegalArgumentException iae){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping(path = "{id}/")
+    public ResponseEntity<?> obtenerProductos(@PathVariable int id, @RequestParam int idPedido){
+        try{
+            List<DetallesProductoDTO> respuesta = productoPedidoService.obtenerListaProductos(idPedido);
+            return ResponseEntity.status(HttpStatus.OK).body(respuesta);
+        }catch(IllegalArgumentException iae){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
+        }
+    }
+
+    @PutMapping(path = "{id}/comprar")
+    public ResponseEntity<?> comprarProducto(@PathVariable int id, @RequestBody List<DetallesProductoDTO> productosCompra){
+        try{
+            productoPedidoService.comprarProductos(productosCompra);
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }catch (IllegalArgumentException iae){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
+        }catch(RuntimeException re){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(re.getMessage());
         }
     }
 }
