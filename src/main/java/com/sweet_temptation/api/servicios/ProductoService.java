@@ -25,7 +25,7 @@ public class ProductoService {
 
     @Transactional(readOnly = true)
     public ProductoDTO consultarProducto(int idProducto){
-        // validaciones.validarIDProducto(idProducto);
+        validaciones.validarIDProducto(idProducto);
         Producto pro = productoRepository.findById(idProducto)
                 .orElseThrow(() -> new NoSuchElementException("Producto no encontrado: " + idProducto));
         validaciones.validarProducto(pro);
@@ -40,7 +40,7 @@ public class ProductoService {
     @Transactional(readOnly = true)
     public List<ProductoDTO> consultarPorCategoria(int idCategoria){
         // TODO - Hacer una validacion para la categoria
-        List<Producto> lista = productoRepository.findByCategoria(idCategoria);
+        List<Producto> lista = productoRepository.findByIDCategoria(idCategoria);
         if(lista == null || lista.isEmpty()){
             throw new NoSuchElementException("No se encontraron productos para la categoria");
         }
@@ -54,7 +54,7 @@ public class ProductoService {
         nuevo.setNombre(producto.getNombre());
         nuevo.setDescripcion(producto.getDescripcion());
         nuevo.setPrecio(producto.getPrecio());
-        //nuevo.setDisponible(producto.getDisponible());
+        nuevo.setDisponible(producto.getDisponible());
         nuevo.setUnidades(producto.getUnidades());
         nuevo.setIdCategoria(producto.getCategoria());
         nuevo.setFechaRegistro(LocalDateTime.now());
@@ -70,12 +70,10 @@ public class ProductoService {
         Producto actual = productoRepository.findById(idProducto)
                 .orElseThrow(() -> new NoSuchElementException("Producto no encontrado: " + idProducto));
 
-        // TODO - Agregar otra validacion para el producto actualizado
-
         actual.setNombre(producto.getNombre());
         actual.setDescripcion(producto.getDescripcion());
         actual.setPrecio(producto.getPrecio());
-        //actual.setDisponible(producto.getDisponible());
+        actual.setDisponible(producto.getDisponible());
         actual.setUnidades(producto.getUnidades());
         actual.setIdCategoria(producto.getCategoria());
         actual.setFechaModificacion(LocalDateTime.now());
@@ -88,35 +86,33 @@ public class ProductoService {
         validaciones.validarIDProducto(idProducto);
         validaciones.validarPrecio(precioNuevo);
 
-        Producto producto = productoRepository.getReferenceById(idProducto);
-        validaciones.validarProducto(producto);
+        Producto producto = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new NoSuchElementException("Producto no encontrado: " + idProducto));
 
         producto.setPrecio(precioNuevo);
         producto.setFechaModificacion(LocalDateTime.now());
 
-        Producto actualizado = productoRepository.save(producto);
-        return toDTO(actualizado);
+        return toDTO(productoRepository.save(producto));
     }
 
     public ProductoDTO modificarInventario(int idProducto, int unidadesProducto){
         validaciones.validarIDProducto(idProducto);
-        Producto producto = productoRepository.getReferenceById(idProducto);
-        validaciones.validarProducto(producto);
+        Producto producto = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new NoSuchElementException("Producto no encontrado: " + idProducto));
 
         int nuevoStock = producto.getUnidades() + unidadesProducto;
-        validaciones.validarStock(unidadesProducto);
+        validaciones.validarStock(nuevoStock);
 
         producto.setUnidades(nuevoStock);
         producto.setFechaModificacion(LocalDateTime.now());
 
-        Producto actualizado = productoRepository.save(producto);
-        return toDTO(actualizado);
+        return toDTO(productoRepository.save(producto));
     }
 
     public ProductoDTO cambiarDisponibilidad(int idProducto, boolean disponible){
         validaciones.validarIDProducto(idProducto);
-        Producto producto = productoRepository.getReferenceById(idProducto);
-        validaciones.validarProducto(producto);
+        Producto producto = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new NoSuchElementException("Producto no encontrado: " + idProducto));
 
         producto.setDisponible(disponible ? 1 : 0);
         producto.setFechaModificacion(LocalDateTime.now());
@@ -126,9 +122,10 @@ public class ProductoService {
 
     public void eliminarProducto(int idProductoEliminar) {
         validaciones.validarIDProducto(idProductoEliminar);
-        Producto p = productoRepository.getReferenceById(idProductoEliminar);
-        validaciones.validarProducto(p);
-        productoRepository.delete(p);
+        if (!productoRepository.existsById(idProductoEliminar)) {
+            throw new NoSuchElementException("Producto no encontrado: " + idProductoEliminar);
+        }
+        productoRepository.deleteById(idProductoEliminar);
     }
 
     private ProductoDTO toDTO(Producto producto){
