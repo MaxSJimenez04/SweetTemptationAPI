@@ -44,6 +44,9 @@ public class ProductoPedidoService {
         Pedido pedidoBD = pedidoRepository.getReferenceById(idPedido);
         productoValidator.validarProducto(productoBD);
         pedidoValidator.validarPedido(pedidoBD);
+        if(productoBD.getUnidades() <= cantidad) {
+            throw new IllegalArgumentException("Cantidad mayor a la disponible");
+        }
         ProductoPedido nuevoProducto = new ProductoPedido();
 
         nuevoProducto.setIdProducto(idProducto);

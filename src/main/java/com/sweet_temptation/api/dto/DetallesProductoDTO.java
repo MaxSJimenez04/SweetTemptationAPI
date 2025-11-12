@@ -10,6 +10,10 @@ public class DetallesProductoDTO {
     private BigDecimal subtotal;
     int idProducto;
 
+    public DetallesProductoDTO() {
+
+    }
+
     public DetallesProductoDTO(int id, int cantidad, String nombre, BigDecimal precio, BigDecimal subtotal, int idProducto) {
         this.id = id;
         this.cantidad = cantidad;

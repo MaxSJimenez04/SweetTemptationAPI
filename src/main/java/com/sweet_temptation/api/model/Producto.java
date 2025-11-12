@@ -36,6 +36,21 @@ public class Producto {
     @Column(nullable = false)
     private int categoria;
 
+    public Producto() {
+    }
+
+    public Producto(int id, String nombre, String descripcion, BigDecimal precio, Boolean disponible, int unidades, LocalDateTime fechaRegistro, LocalDateTime fechaModificacion, int categoria) {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.precio = precio;
+        this.disponible = disponible;
+        this.unidades = unidades;
+        this.fechaRegistro = fechaRegistro;
+        this.fechaModificacion = fechaModificacion;
+        this.categoria = categoria;
+    }
+
     public int getId() {
         return id;
     }
