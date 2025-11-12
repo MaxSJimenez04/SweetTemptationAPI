@@ -33,6 +33,19 @@ public class Pedido {
     @Column(nullable = false)
     private int idCliente;
 
+    public Pedido() {
+    }
+
+    public Pedido(int id, LocalDateTime fechaCompra, Boolean actual, BigDecimal total, int estado, Boolean personalizado, int idCliente) {
+        this.id = id;
+        this.fechaCompra = fechaCompra;
+        this.actual = actual;
+        this.total = total;
+        this.estado = estado;
+        this.personalizado = personalizado;
+        this.idCliente = idCliente;
+    }
+
     public int getId() {
         return id;
     }

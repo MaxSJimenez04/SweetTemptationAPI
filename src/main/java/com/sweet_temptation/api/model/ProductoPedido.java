@@ -25,6 +25,18 @@ public class ProductoPedido {
     @Column(precision = 9, scale = 2)
     private BigDecimal precioVenta;
 
+    public ProductoPedido() {
+    }
+
+    public ProductoPedido(int id, BigDecimal subtotal, int cantidad, int idPedido, int idProducto, BigDecimal precioVenta) {
+        this.id = id;
+        this.subtotal = subtotal;
+        this.cantidad = cantidad;
+        this.idPedido = idPedido;
+        this.idProducto = idProducto;
+        this.precioVenta = precioVenta;
+    }
+
     public int getId() {
         return id;
     }
