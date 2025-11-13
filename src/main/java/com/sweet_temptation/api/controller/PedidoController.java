@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -122,6 +123,19 @@ public class PedidoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(aoie.getMessage());
         }catch(RuntimeException rte ){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(rte.getMessage());
+        }
+    }
+
+    @PutMapping(path = "{id}/recalcular")
+    public ResponseEntity<?> recalcularProducto(@PathVariable int id,@RequestParam int idPedido,
+                                                @RequestBody BigDecimal cantidad){
+        try{
+            PedidoDTO pedidoActualizado = pedidoService.cambiarTotalPedido(idPedido,cantidad);
+            return ResponseEntity.status(HttpStatus.OK).body(pedidoActualizado);
+        }catch (IllegalArgumentException iae){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
+        }catch(NoSuchElementException nsee){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
         }
     }
 

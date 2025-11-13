@@ -80,7 +80,6 @@ public class PedidoService {
                 pedidoNuevo.getIdCliente());
     }
 
-    //TODO: Implementar en ProductoPedido
     public PedidoDTO cambiarTotalPedido(int idPedido, BigDecimal total){
         validaciones.validarIDPedido(idPedido);
         Pedido pedidoBD = pedidoRepository.getReferenceById(idPedido);
@@ -91,7 +90,6 @@ public class PedidoService {
                 pedidoActualizado.getTotal(), pedidoActualizado.getEstado(), pedidoActualizado.getPersonalizado(),
                 pedidoActualizado.getIdCliente());
     }
-
 
     public void cancelarPedido(int idPedido){
         validaciones.validarIDPedido(idPedido);
