@@ -122,6 +122,7 @@ public class ProductoService {
 
     public void eliminarProducto(int idProductoEliminar) {
         validaciones.validarIDProducto(idProductoEliminar);
+        //productoRepository.existsById(idProductoEliminar);
         if (!productoRepository.existsById(idProductoEliminar)) {
             throw new NoSuchElementException("Producto no encontrado: " + idProductoEliminar);
         }
