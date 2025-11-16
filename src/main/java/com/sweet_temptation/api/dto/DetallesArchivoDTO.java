@@ -1,22 +1,21 @@
 package com.sweet_temptation.api.dto;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
-public class ArchivoDTO {
+public class DetallesArchivoDTO {
     int id;
     LocalDateTime fechaRegistro;
     String extension;
-    byte[] datos;
+    String ruta;
 
-    public ArchivoDTO() {
+    public DetallesArchivoDTO() {
     }
 
-    public ArchivoDTO(int id, LocalDateTime fechaRegistro, String extension, byte[] datos) {
+    public DetallesArchivoDTO(int id, LocalDateTime fechaRegistro, String extension, String ruta) {
         this.id = id;
         this.fechaRegistro = fechaRegistro;
         this.extension = extension;
-        this.datos = datos;
+        this.ruta = ruta;
     }
 
     public int getId() {
@@ -43,11 +42,11 @@ public class ArchivoDTO {
         this.extension = extension;
     }
 
-    public byte[] getDatos() {
-        return datos;
+    public String getRuta() {
+        return ruta;
     }
 
-    public void setDatos(byte[] datos) {
-        this.datos = datos;
+    public void setRuta(String ruta) {
+        this.ruta = ruta;
     }
 }

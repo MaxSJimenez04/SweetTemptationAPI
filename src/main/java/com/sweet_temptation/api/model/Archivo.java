@@ -20,6 +20,7 @@ public class Archivo {
     private String extension;
 
     @Lob
+    @Column(name = "datos")
     private byte[] datos;
 
     public int getId() {
@@ -28,6 +29,16 @@ public class Archivo {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Archivo() {
+    }
+
+    public Archivo(int id, LocalDateTime fechaRegistro, String extension, byte[] datos) {
+        this.id = id;
+        this.fechaRegistro = fechaRegistro;
+        this.extension = extension;
+        this.datos = datos;
     }
 
     public LocalDateTime getFechaRegistro() {
