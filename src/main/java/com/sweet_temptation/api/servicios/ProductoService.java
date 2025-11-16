@@ -47,7 +47,7 @@ public class ProductoService {
         return  lista.stream().map(this::toDTO).toList();
     }
 
-    public ProductoDTO crearProducto(ProductoDTO producto){
+    public int crearProducto(ProductoDTO producto){
         validaciones.validarProductoNuevo(producto);
 
         Producto nuevo = new Producto();
@@ -62,7 +62,9 @@ public class ProductoService {
 
         Producto guardado = productoRepository.save(nuevo);
         validaciones.validarProducto(guardado);
-        return  toDTO(guardado);
+        //return  toDTO(guardado);
+
+        return guardado.getId();
     }
 
     public ProductoDTO actualizarProducto(int idProducto, ProductoDTO producto){

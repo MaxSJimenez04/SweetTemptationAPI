@@ -124,10 +124,9 @@ public class ProductoServiceTest {
         Producto productoGuardado = productoEjemplo1(10);
         when(productoRepository.save(any(Producto.class))).thenReturn(productoGuardado);
 
-        ProductoDTO productoDTO = productoService.crearProducto(productoNuevo);
+        int productoDTO = productoService.crearProducto(productoNuevo);
 
-        assertEquals(10, productoDTO.getId());
-        assertEquals("Brownie", productoDTO.getNombre());
+        assertEquals(10, productoDTO);
         verify(validaciones, times(1)).validarProductoNuevo(productoNuevo);
         verify(productoRepository, times(1)).save(any(Producto.class));
         verify(validaciones, times(1)).validarProducto(productoGuardado);

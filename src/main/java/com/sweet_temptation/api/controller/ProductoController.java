@@ -44,8 +44,8 @@ public class ProductoController {
     @PostMapping(path = "/nuevo")
     public ResponseEntity<?> crearProducto(@RequestBody ProductoDTO nuevoProducto){
         try{
-            ProductoDTO producto = productoService.crearProducto(nuevoProducto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(producto);
+            int idProductoNuevo = productoService.crearProducto(nuevoProducto);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Producto creado con el id:" + idProductoNuevo);
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
