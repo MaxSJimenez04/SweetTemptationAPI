@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "Producto")
@@ -22,8 +21,7 @@ public class Producto {
     @Column(precision = 9, scale = 2)
     private BigDecimal precio;
 
-    @Column(nullable = false)
-    private Boolean disponible;
+    private int disponible;
 
     private int unidades;
 
@@ -83,11 +81,11 @@ public class Producto {
         this.precio = precio;
     }
 
-    public Boolean getDisponible() {
+    public int getDisponible() {
         return disponible;
     }
 
-    public void setDisponible(Boolean disponible) {
+    public void setDisponible(int disponible) {
         this.disponible = disponible;
     }
 
