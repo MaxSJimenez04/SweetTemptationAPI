@@ -4,4 +4,6 @@ import com.sweet_temptation.api.model.ImagenProducto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ImagenProductoRepository extends JpaRepository<ImagenProducto,Integer> {
+    //Buscar el id asociacion de un producto
+    ImagenProducto findByIdProducto(int idProducto);
 }
