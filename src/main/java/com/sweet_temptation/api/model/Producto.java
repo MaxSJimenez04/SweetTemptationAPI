@@ -21,7 +21,7 @@ public class Producto {
     @Column(precision = 9, scale = 2)
     private BigDecimal precio;
 
-    private int disponible;
+    private boolean disponible;
 
     private int unidades;
 
@@ -37,7 +37,7 @@ public class Producto {
     public Producto() {
     }
 
-    public Producto(int id, String nombre, String descripcion, BigDecimal precio, Boolean disponible, int unidades, LocalDateTime fechaRegistro, LocalDateTime fechaModificacion, int categoria) {
+    public Producto(int id, String nombre, String descripcion, BigDecimal precio, boolean disponible, int unidades, LocalDateTime fechaRegistro, LocalDateTime fechaModificacion, int categoria) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -81,11 +81,11 @@ public class Producto {
         this.precio = precio;
     }
 
-    public int getDisponible() {
+    public boolean getDisponible() {
         return disponible;
     }
 
-    public void setDisponible(int disponible) {
+    public void setDisponible(boolean disponible) {
         this.disponible = disponible;
     }
 
