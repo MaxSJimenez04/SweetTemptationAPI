@@ -116,7 +116,7 @@ public class ProductoService {
         Producto producto = productoRepository.findById(idProducto)
                 .orElseThrow(() -> new NoSuchElementException("Producto no encontrado: " + idProducto));
 
-        producto.setDisponible(disponible ? 1 : 0);
+        producto.setDisponible(disponible);
         producto.setFechaModificacion(LocalDateTime.now());
 
         return toDTO(productoRepository.save(producto));

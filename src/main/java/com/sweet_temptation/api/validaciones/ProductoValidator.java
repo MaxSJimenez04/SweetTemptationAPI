@@ -45,7 +45,7 @@ public class ProductoValidator {
         if(producto.getUnidades() < 0){
            throw new IllegalArgumentException("Las unidades del producto son invalidas");
         }
-        if(producto.getDisponible() != 0 || producto.getDisponible() != 1){
+        if(producto.getDisponible() != false || producto.getDisponible() != true){
             throw new IllegalArgumentException("No se indica si esta disponible o no el producto");
         }
     }
@@ -64,7 +64,7 @@ public class ProductoValidator {
         if(producto.getUnidades() < 0){
             throw new IllegalArgumentException("Las unidades del producto son invalidas");
         }
-        if(producto.getDisponible() != 0 || producto.getDisponible() != 1){
+        if(producto.getDisponible() != false || !producto.getDisponible()){
             throw new IllegalArgumentException("No se indica si esta disponible o no el producto");
         }
     }

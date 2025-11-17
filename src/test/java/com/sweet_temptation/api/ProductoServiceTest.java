@@ -118,7 +118,7 @@ public class ProductoServiceTest {
 
     @Test
     void crerProducto_Exito(){
-        ProductoDTO productoNuevo = new ProductoDTO(0,"Brownie", "Chocolate", BigDecimal.valueOf(39.50), 1,30, LocalDateTime.now(), LocalDateTime.now(),1);
+        ProductoDTO productoNuevo = new ProductoDTO(0,"Brownie", "Chocolate", BigDecimal.valueOf(39.50), true,30, LocalDateTime.now(), LocalDateTime.now(),1);
         doNothing().when(validaciones).validarProductoNuevo(productoNuevo);
 
         Producto productoGuardado = productoEjemplo1(10);
@@ -134,7 +134,7 @@ public class ProductoServiceTest {
 
     @Test
     void crearProducto_DTOInvalido(){
-        ProductoDTO nuevo = new ProductoDTO(0, "", "Descripcion test", BigDecimal.valueOf(-1), 1, 10, LocalDateTime.now(), LocalDateTime.now(),2);
+        ProductoDTO nuevo = new ProductoDTO(0, "", "Descripcion test", BigDecimal.valueOf(-1), true, 10, LocalDateTime.now(), LocalDateTime.now(),2);
         doThrow(IllegalArgumentException.class).when(validaciones).validarProductoNuevo(nuevo);
 
         assertThrows(IllegalArgumentException.class, () -> productoService.crearProducto(nuevo));
@@ -147,7 +147,7 @@ public class ProductoServiceTest {
         int id = 5;
         Producto producto = productoEjemplo1(id);
         ProductoDTO cambios = new ProductoDTO(id, "Brownie Premium", "Con nuez",
-                BigDecimal.valueOf(55), 1, 25, producto.getFechaRegistro(), LocalDateTime.now(), 2);
+                BigDecimal.valueOf(55), true, 25, producto.getFechaRegistro(), LocalDateTime.now(), 2);
 
         doNothing().when(validaciones).validarIDProducto(id);
         when(productoRepository.findById(id)).thenReturn(Optional.of(producto));
@@ -165,7 +165,7 @@ public class ProductoServiceTest {
     @Test
     void actualizarProducto_NoExiste(){
         int id = 123;
-        ProductoDTO cambios = new ProductoDTO(id, "X", "Y", BigDecimal.TEN, 1, 1,
+        ProductoDTO cambios = new ProductoDTO(id, "X", "Y", BigDecimal.TEN, true, 1,
                 LocalDateTime.now(), LocalDateTime.now(), 2);
         doNothing().when(validaciones).validarIDProducto(id);
         when(productoRepository.findById(id)).thenReturn(Optional.empty());
@@ -213,7 +213,7 @@ public class ProductoServiceTest {
         producto.setNombre("Brownie");
         producto.setDescripcion("Chocolate");
         producto.setPrecio(BigDecimal.valueOf(39.50));
-        producto.setDisponible(1);
+        producto.setDisponible(true);
         producto.setUnidades(50);
         producto.setIdCategoria(1);
         producto.setFechaRegistro(LocalDateTime.now().minusDays(1));
@@ -227,7 +227,7 @@ public class ProductoServiceTest {
         producto.setNombre("Pay de limon");
         producto.setDescripcion("Limon");
         producto.setPrecio(BigDecimal.valueOf(88.50));
-        producto.setDisponible(1);
+        producto.setDisponible(true);
         producto.setUnidades(35);
         producto.setIdCategoria(6);
         producto.setFechaRegistro(LocalDateTime.now().minusDays(1));

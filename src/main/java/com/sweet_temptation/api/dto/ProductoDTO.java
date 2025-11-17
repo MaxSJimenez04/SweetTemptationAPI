@@ -8,13 +8,13 @@ public class ProductoDTO {
     String nombre;
     String descripcion;
     BigDecimal precio;
-    int disponible;
+    boolean disponible;
     int unidades;
     LocalDateTime fechaRegistro;
     LocalDateTime fechaModificacion;
     int categoria;
 
-    public ProductoDTO(int id, String nombre, String descripcion, BigDecimal precio,int disponible, int unidades, LocalDateTime fechaRegistro, LocalDateTime fechaModificacion, int categoria ){
+    public ProductoDTO(int id, String nombre, String descripcion, BigDecimal precio,boolean disponible, int unidades, LocalDateTime fechaRegistro, LocalDateTime fechaModificacion, int categoria ){
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -37,7 +37,7 @@ public class ProductoDTO {
 
     public BigDecimal getPrecio() { return precio; }
 
-    public int getDisponible() { return disponible; }
+    public boolean getDisponible() { return disponible; }
 
     public int getUnidades() { return unidades; }
 
@@ -56,7 +56,7 @@ public class ProductoDTO {
 
     public void setPrecio(BigDecimal precio) { this.precio = precio; }
 
-    public void setDisponible(int disponible) { this.disponible = disponible; }
+    public void setDisponible(boolean disponible) { this.disponible = disponible; }
 
     public void setUnidades(int unidades) { this.unidades = unidades; }
 
