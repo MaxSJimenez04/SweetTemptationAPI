@@ -156,6 +156,57 @@ public class PedidoServiceTest {
     }
 
     @Test
+    void consularPedido_Exito(){
+        //Arrange
+        int id = 1;
+        when(pedidoRepository.getReferenceById(id)).thenReturn(pedido1);
+
+        //Act
+        PedidoDTO respuesta = pedidoService.consultarPedido(id);
+
+        //Assert
+        assertEquals(pedido1.getId(), respuesta.getId());
+        assertEquals(pedido1.getFechaCompra(), respuesta.getFechaCompra());
+        assertEquals(pedido1.getActual(), respuesta.getActual());
+        assertEquals(pedido1.getTotal(), respuesta.getTotal());
+        assertEquals(pedido1.getEstado(), respuesta.getEstado());
+        assertEquals(pedido1.getPersonalizado(), respuesta.getPersonalizado());
+        verify(pedidoRepository, times(1)).getReferenceById(id);
+        verify(validaciones, times(1)).validarIDPedido(id);
+        verify(validaciones, times(1)).validarPedido(any(Pedido.class));
+
+    }
+
+    @Test
+    void consularPedido_IDInvalido(){
+        //Arrange
+        int id = 0;
+
+        //Act
+        doThrow(IllegalArgumentException.class).when(validaciones).validarIDPedido(id);
+
+        //Assert
+        assertThrows(IllegalArgumentException.class, () -> pedidoService.consultarPedido(id));
+        verify(validaciones, times(1)).validarIDPedido(id);
+    }
+
+    @Test
+    void consularPedido_PedidoNoExiste(){
+        //Arrange
+        int id = 5;
+        when(pedidoRepository.getReferenceById(id)).thenReturn(null);
+
+        //Act
+        doThrow(NoSuchElementException.class).when(validaciones).validarPedido(null);
+
+        //Assert
+        assertThrows(NoSuchElementException.class, () -> pedidoService.consultarPedido(id));
+        verify(validaciones, times(1)).validarIDPedido(id);
+        verify(pedidoRepository, times(1)).getReferenceById(id);
+        verify(validaciones, times(1)).validarPedido(null);
+    }
+
+    @Test
     void crearPedidoCliente_Exito(){
         //Act
         pedidoService.crearPedidoCliente(cliente.getId());

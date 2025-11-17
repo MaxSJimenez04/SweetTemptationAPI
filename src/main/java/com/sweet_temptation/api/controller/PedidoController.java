@@ -48,6 +48,18 @@ public class PedidoController {
         }
     }
 
+    @GetMapping(path = "/")
+    public ResponseEntity<?> getPedido(@RequestParam int idPedido){
+        try {
+            PedidoDTO pedido = pedidoService.consultarPedido(idPedido);
+            return ResponseEntity.status(HttpStatus.OK).body(pedido);
+        }catch(IllegalArgumentException iae) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
+        }catch(NoSuchElementException nsee){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
+        }
+    }
+
     @PostMapping(path = "/")
     public ResponseEntity<?> crearPedidoEmpleado(@RequestParam int idEmpleado){
         try{
@@ -56,7 +68,6 @@ public class PedidoController {
         }catch (IllegalArgumentException iae){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
         }
-
     }
 
     @PostMapping(path = "/nuevo")

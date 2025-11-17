@@ -53,6 +53,14 @@ public class PedidoService {
         return pedidosActual;
     }
 
+    public PedidoDTO consultarPedido(int idPedido){
+        validaciones.validarIDPedido(idPedido);
+        Pedido pedidoBD = pedidoRepository.getReferenceById(idPedido);
+        validaciones.validarPedido(pedidoBD);
+        return new PedidoDTO(pedidoBD.getId(), pedidoBD.getFechaCompra(), pedidoBD.getActual(),
+                pedidoBD.getTotal(), pedidoBD.getEstado(), pedidoBD.getPersonalizado(), pedidoBD.getIdCliente());
+    }
+
     public void crearPedidoCliente(int idCliente){
         validaciones.validarIDCliente(idCliente);
         Pedido pedidoNuevo = new Pedido();
