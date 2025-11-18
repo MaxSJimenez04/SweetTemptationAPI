@@ -3,6 +3,7 @@ package com.sweet_temptation.api.repository;
 import com.sweet_temptation.api.model.Pedido;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,4 +15,12 @@ public interface PedidoRepository extends JpaRepository<Pedido,Integer> {
     //Buscar los pedido en proceso del empleado
     List<Pedido> findByIdClienteAndEstado(int  idCliente, int estado);
 
+    // ========== Estadisticas de ventas ==========
+
+    // Ventas por estado y rango de fechas
+    List<Pedido> findByEstadoAndFechaCompra(
+            int estado,
+            LocalDateTime fechaInicio,
+            LocalDateTime fechaFin
+    );
 }

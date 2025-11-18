@@ -7,12 +7,14 @@ import com.sweet_temptation.api.model.Pedido;
 import com.sweet_temptation.api.servicios.PedidoService;
 import com.sweet_temptation.api.servicios.ProductoPedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -183,4 +185,32 @@ public class PedidoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(re.getMessage());
         }
     }
+
+    // ========== Estadisticas de ventas ==========
+
+    @GetMapping("/ventas")
+    public ResponseEntity<?> consultarVentas(
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate fechaInicio,
+
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate fechaFin,
+
+            @RequestParam String estado
+    ){
+        try{
+            List<PedidoDTO> ventas = pedidoService.consultarVentasPorRangoYEstado(fechaInicio, fechaFin, estado);
+
+            return ResponseEntity.status(HttpStatus.OK).body(ventas);
+        }catch(IllegalArgumentException ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }catch (NoSuchElementException ex){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
+    }
+
+
+
 }

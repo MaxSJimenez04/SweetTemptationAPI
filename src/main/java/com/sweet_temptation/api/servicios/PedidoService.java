@@ -5,10 +5,13 @@ import com.sweet_temptation.api.model.Pedido;
 import com.sweet_temptation.api.repository.PedidoRepository;
 import com.sweet_temptation.api.validaciones.PedidoValidator;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -124,5 +127,48 @@ public class PedidoService {
         Pedido pedidoBD = pedidoRepository.getReferenceById(idPedidoEliminar);
         validaciones.validarPedido(pedidoBD);
         pedidoRepository.delete(pedidoBD);
+    }
+
+
+
+    // ========== Estadisticas de ventas ==========
+
+    @Transactional(readOnly = true)
+    public List<PedidoDTO> consultarVentasPorRangoYEstado(
+            LocalDate fechaInicio,
+            LocalDate fechaFin,
+            String estadoTexto
+    ) {
+        // para validar fechas
+        LocalDateTime inicioDateTime = fechaInicio.atStartOfDay();
+        LocalDateTime finDateTime = fechaFin.atTime(LocalTime.MAX);
+
+        validaciones.validarRangoFecha(inicioDateTime, finDateTime);
+
+        int estado = validaciones.validarEstadoVenta(estadoTexto);
+
+        // Consultar en BD
+        List<Pedido> pedidos = pedidoRepository
+                .findByEstadoAndFechaCompra(estado, inicioDateTime, finDateTime);
+
+        if (pedidos == null || pedidos.isEmpty()) {
+            throw new NoSuchElementException("No se encontraron ventas en el rango y estado indicados");
+        }
+
+        List<PedidoDTO> ventas = new ArrayList<>();
+        for (Pedido p : pedidos) {
+            PedidoDTO dto = new PedidoDTO(
+                    p.getId(),
+                    p.getFechaCompra(),
+                    p.getActual(),
+                    p.getTotal(),
+                    p.getEstado(),
+                    p.getPersonalizado(),
+                    p.getIdCliente()
+            );
+            ventas.add(dto);
+        }
+
+        return ventas;
     }
 }
