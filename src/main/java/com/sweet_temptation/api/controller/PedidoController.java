@@ -63,8 +63,8 @@ public class PedidoController {
     @PostMapping(path = "/")
     public ResponseEntity<?> crearPedidoEmpleado(@RequestParam int idEmpleado){
         try{
-            pedidoService.crearPedidoEmpleado(idEmpleado);
-            return ResponseEntity.status(HttpStatus.CREATED).body(null);
+            PedidoDTO pedido = pedidoService.crearPedidoEmpleado(idEmpleado);
+            return ResponseEntity.status(HttpStatus.CREATED).body(pedido);
         }catch (IllegalArgumentException iae){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
         }
