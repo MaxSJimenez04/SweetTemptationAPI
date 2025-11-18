@@ -19,8 +19,8 @@ public interface PedidoRepository extends JpaRepository<Pedido,Integer> {
 
     // Ventas por estado y rango de fechas
     List<Pedido> findByEstadoAndFechaCompra(
-            int estado,
             LocalDateTime fechaInicio,
-            LocalDateTime fechaFin
+            LocalDateTime fechaFin,
+            int estado
     );
 }

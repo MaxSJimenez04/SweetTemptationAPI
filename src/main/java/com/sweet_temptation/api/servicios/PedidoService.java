@@ -149,7 +149,7 @@ public class PedidoService {
 
         // Consultar en BD
         List<Pedido> pedidos = pedidoRepository
-                .findByEstadoAndFechaCompra(estado, inicioDateTime, finDateTime);
+                .findByEstadoAndFechaCompra(inicioDateTime, finDateTime, estado);
 
         if (pedidos == null || pedidos.isEmpty()) {
             throw new NoSuchElementException("No se encontraron ventas en el rango y estado indicados");
