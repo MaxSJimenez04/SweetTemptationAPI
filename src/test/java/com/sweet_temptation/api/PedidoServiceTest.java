@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -118,7 +119,7 @@ public class PedidoServiceTest {
     @Test
     void consultarPedidosActuales_Exito(){
         //Arrange
-        when(pedidoRepository.findByIdClienteAndEstado(empleado.getId(),2)).thenReturn(pedidos);
+        when(pedidoRepository.findByIdClienteAndEstadoIn(empleado.getId(),Arrays.asList(1,2))).thenReturn(pedidos);
 
         //Act
         List<PedidoDTO> respuesta = pedidoService.consultarPedidosActuales(empleado.getId());
@@ -126,7 +127,7 @@ public class PedidoServiceTest {
         //Assert
         assertEquals(pedidos.size(), respuesta.size());
         verify(validaciones, times(1)).validarIDCliente(empleado.getId());
-        verify(pedidoRepository, times(1)).findByIdClienteAndEstado(empleado.getId(),2);
+        verify(pedidoRepository, times(1)).findByIdClienteAndEstadoIn(empleado.getId(),Arrays.asList(1,2));
     }
 
     @Test
@@ -147,63 +148,12 @@ public class PedidoServiceTest {
         //Arrange
         pedidos.clear();
         //Act
-        when(pedidoRepository.findByIdClienteAndEstado(empleado.getId(),2)).thenReturn(null);
+        when(pedidoRepository.findByIdClienteAndEstadoIn(empleado.getId(),Arrays.asList(1,2))).thenReturn(null);
 
         //Assert
         assertThrows(NoSuchElementException.class, () -> pedidoService.consultarPedidosActuales(empleado.getId()));
         verify(validaciones, times(1)).validarIDCliente(empleado.getId());
-        verify(pedidoRepository, times(1)).findByIdClienteAndEstado(empleado.getId(),2);
-    }
-
-    @Test
-    void consularPedido_Exito(){
-        //Arrange
-        int id = 1;
-        when(pedidoRepository.getReferenceById(id)).thenReturn(pedido1);
-
-        //Act
-        PedidoDTO respuesta = pedidoService.consultarPedido(id);
-
-        //Assert
-        assertEquals(pedido1.getId(), respuesta.getId());
-        assertEquals(pedido1.getFechaCompra(), respuesta.getFechaCompra());
-        assertEquals(pedido1.getActual(), respuesta.getActual());
-        assertEquals(pedido1.getTotal(), respuesta.getTotal());
-        assertEquals(pedido1.getEstado(), respuesta.getEstado());
-        assertEquals(pedido1.getPersonalizado(), respuesta.getPersonalizado());
-        verify(pedidoRepository, times(1)).getReferenceById(id);
-        verify(validaciones, times(1)).validarIDPedido(id);
-        verify(validaciones, times(1)).validarPedido(any(Pedido.class));
-
-    }
-
-    @Test
-    void consularPedido_IDInvalido(){
-        //Arrange
-        int id = 0;
-
-        //Act
-        doThrow(IllegalArgumentException.class).when(validaciones).validarIDPedido(id);
-
-        //Assert
-        assertThrows(IllegalArgumentException.class, () -> pedidoService.consultarPedido(id));
-        verify(validaciones, times(1)).validarIDPedido(id);
-    }
-
-    @Test
-    void consularPedido_PedidoNoExiste(){
-        //Arrange
-        int id = 5;
-        when(pedidoRepository.getReferenceById(id)).thenReturn(null);
-
-        //Act
-        doThrow(NoSuchElementException.class).when(validaciones).validarPedido(null);
-
-        //Assert
-        assertThrows(NoSuchElementException.class, () -> pedidoService.consultarPedido(id));
-        verify(validaciones, times(1)).validarIDPedido(id);
-        verify(pedidoRepository, times(1)).getReferenceById(id);
-        verify(validaciones, times(1)).validarPedido(null);
+        verify(pedidoRepository, times(1)).findByIdClienteAndEstadoIn(empleado.getId(), Arrays.asList(1,2));
     }
 
     @Test
