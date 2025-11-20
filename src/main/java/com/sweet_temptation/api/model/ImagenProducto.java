@@ -25,6 +25,17 @@ public class ImagenProducto {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime fechaAsociacion;
 
+    public ImagenProducto() {
+    }
+
+    public ImagenProducto(int id, int idProducto, int idArchivo, LocalDateTime fechaRegistro, LocalDateTime fechaAsociacion) {
+        this.id = id;
+        this.idProducto = idProducto;
+        this.idArchivo = idArchivo;
+        this.fechaRegistro = fechaRegistro;
+        this.fechaAsociacion = fechaAsociacion;
+    }
+
     public int getId() {
         return id;
     }
