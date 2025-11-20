@@ -1,6 +1,7 @@
 package com.sweet_temptation.api;
 
 import com.sweet_temptation.api.dto.ArchivoDTO;
+import com.sweet_temptation.api.dto.DetallesArchivoDTO;
 import com.sweet_temptation.api.model.Archivo;
 import com.sweet_temptation.api.model.ImagenProducto;
 import com.sweet_temptation.api.model.Producto;
@@ -153,16 +154,119 @@ public class ArchivoServiceTest {
         //Arrange
         int id = 5;
         when(productoRepository.getReferenceById(id)).thenReturn(null);
+        when(archivoRepository.getReferenceById(archivo.getId())).thenReturn(archivo);
 
         //Act
         doThrow(NoSuchElementException.class).when(productoValidator).validarProducto(null);
 
         //Assert
         assertThrows(NoSuchElementException.class, () -> archivoService.asociarArchivo(archivo.getId(), id));
+        verify(productoValidator, times(1)).validarIDProducto(id);
+        verify(archivoValidator, times(1)).validarIDArchivo(archivo.getId());
+        verify(archivoRepository, times(1)).getReferenceById(archivo.getId());
+        verify(archivoValidator, times(1)).validarArchivo(archivo);
+        verify(productoValidator, times(1)).validarProducto(null);
     }
 
     @Test
     void asociarArchivo_ArchivoInvalido(){
+        //Arrange
+        int id = 5;
+        when(archivoRepository.getReferenceById(id)).thenReturn(null);
+        when (productoRepository.getReferenceById(producto.getId())).thenReturn(producto);
+
+        //Act
+        doThrow(NoSuchElementException.class).when(archivoValidator).validarArchivo(null);
+
+        //Assert
+        assertThrows(NoSuchElementException.class, () -> archivoService.asociarArchivo(id, producto.getId()));
+        verify(archivoValidator, times(1)).validarIDArchivo(id);
+        verify(productoValidator, times(1)).validarIDProducto(producto.getId());
+        verify(archivoValidator, times(1)).validarArchivo(null);
+    }
+
+    @Test
+    void obtenerDatosArchivo_Exito(){
+        //Arrange
+        when(imagenProductoRepository.findByIdProducto(producto.getId())).thenReturn(asociacion);
+        when(archivoRepository.getReferenceById(asociacion.getIdArchivo())).thenReturn(archivo);
+
+        //Act
+        DetallesArchivoDTO respuesta = archivoService.obtenerDatosArchivo(producto.getId());
+
+        //Assert
+        assertEquals(archivo.getId(), respuesta.getId());
+        assertEquals(archivo.getExtension(), respuesta.getExtension());
+        assertEquals(archivo.getFechaRegistro(), respuesta.getFechaRegistro());
+        verify(imagenProductoRepository, times(1)).findByIdProducto(producto.getId());
+        verify(archivoRepository, times(1)).getReferenceById(asociacion.getIdArchivo());
+        verify(productoValidator, times(1)).validarIDProducto(producto.getId());
+        verify(archivoValidator, times(1)).validarArchivo(any(Archivo.class));
+
+    }
+
+    @Test
+    void obtenerDatosArchivo_IDInvalido(){
+        //Arrange
+        doThrow(IllegalArgumentException.class).when(productoValidator).validarIDProducto(producto.getId());
+
+        //Act
+        assertThrows(IllegalArgumentException.class, () -> archivoService.obtenerDatosArchivo(producto.getId()));
+
+        //Assert
+        verify(productoValidator, times(1)).validarIDProducto(producto.getId());
+    }
+
+    @Test
+    void obtenerDatosArchivo_ArchivoInvalido(){
+        //Arrange
+        asociacion.setIdArchivo(5);
+        when(imagenProductoRepository.findByIdProducto(producto.getId())).thenReturn(asociacion);
+        when(archivoRepository.getReferenceById(asociacion.getIdArchivo())).thenReturn(null);
+
+        //Act
+        doThrow(NoSuchElementException.class).when(archivoValidator).validarArchivo(null);
+
+        //Assert
+        assertThrows(NoSuchElementException.class, () -> archivoService.obtenerDatosArchivo(producto.getId()));
+        verify(productoValidator, times(1)).validarIDProducto(producto.getId());
+        verify(imagenProductoRepository, times(1)).findByIdProducto(producto.getId());
+        verify(archivoRepository, times(1)).getReferenceById(asociacion.getIdArchivo());
+        verify(archivoValidator, times(1)).validarArchivo(null);
+    }
+
+    @Test
+    void obtenerArchivo_Exito(){
+        //Arrange
+        when(archivoRepository.getReferenceById(archivo.getId())).thenReturn(archivo);
+
+        //Act
+        ArchivoDTO respuesta = archivoService.obtenerArchivo(archivo.getId());
+
+        //Assert
+        assertEquals(archivo.getId(), respuesta.getId());
+        assertEquals(archivo.getExtension(), respuesta.getExtension());
+        assertEquals(archivo.getFechaRegistro(), respuesta.getFechaRegistro());
+        assertEquals(archivo.getDatos(), respuesta.getDatos());
+        verify(archivoRepository, times(1)).getReferenceById(archivo.getId());
+        verify(archivoValidator, times(1)).validarIDArchivo(archivo.getId());
+        verify(archivoValidator, times(1)).validarArchivo(archivo);
+    }
+
+    @Test
+    void obtenerArchivo_IDInvalido(){
+        //Arrange
+        archivo.setId(0);
+
+        //Act
+        doThrow(IllegalArgumentException.class).when(archivoValidator).validarIDArchivo(archivo.getId());
+
+        //Assert
+        assertThrows(IllegalArgumentException.class, () -> archivoService.obtenerArchivo(archivo.getId()));
+        verify(archivoValidator, times(1)).validarIDArchivo(archivo.getId());
+    }
+    @Test
+    void obtenerArchivo_ArchivoInvalido(){
         //Arrange
         int id = 5;
         when(archivoRepository.getReferenceById(id)).thenReturn(null);
@@ -171,14 +275,9 @@ public class ArchivoServiceTest {
         doThrow(NoSuchElementException.class).when(archivoValidator).validarArchivo(null);
 
         //Assert
-        assertThrows(NoSuchElementException.class, () -> archivoService.asociarArchivo(id, producto.getId()));
+        assertThrows(NoSuchElementException.class, () -> archivoService.obtenerArchivo(id));
+        verify(archivoValidator, times(1)).validarIDArchivo(id);
+        verify(archivoRepository, times(1)).getReferenceById(id);
+        verify(archivoValidator, times(1)).validarArchivo(null);
     }
-
-    @Test
-    void obtenerDatosArchivo_Exito(){
-
-    }
-
-    @Test
-    void obtenerDatosArchivo_ArchivoInvalido(){}
 }
