@@ -72,7 +72,7 @@ public class ArchivoService {
         int idArchivo = asociacionBD.getIdArchivo();
         Archivo archivoBD = repository.getReferenceById(idArchivo);
         DetallesArchivoDTO detallesArchivo = new DetallesArchivoDTO(archivoBD.getId(),
-                archivoBD.getFechaRegistro(), archivoBD.getExtension(), "http://localhost:8080/api/archivo/" + archivoBD.getId());
+                archivoBD.getFechaRegistro(), archivoBD.getExtension(), "http://localhost:8080/archivo/" + archivoBD.getId());
         return detallesArchivo;
     }
 

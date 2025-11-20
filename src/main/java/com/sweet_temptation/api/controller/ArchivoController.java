@@ -44,10 +44,10 @@ public class ArchivoController {
     }
 
     @GetMapping(path = "/")
-    public ResponseEntity<?> obtenerDetallesArchivo(@RequestParam int idAsociacion){
+    public ResponseEntity<?> obtenerDetallesArchivo(@RequestParam int idProducto){
         try{
-            DetallesArchivoDTO detalles = archivoService.obtenerDatosArchivo(idAsociacion);
-            return ResponseEntity.status(HttpStatus.CREATED).body(detalles);
+            DetallesArchivoDTO detalles = archivoService.obtenerDatosArchivo(idProducto);
+            return ResponseEntity.status(HttpStatus.OK).body(detalles);
         }catch (IllegalArgumentException iae){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
         }catch (NoSuchElementException nsee){
@@ -59,7 +59,7 @@ public class ArchivoController {
     public ResponseEntity<?> obtenerImagen(@PathVariable int id) {
         try {
             ArchivoDTO respuesta = archivoService.obtenerArchivo(id);
-            return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
+            return ResponseEntity.status(HttpStatus.OK).body(respuesta);
         }catch (IllegalArgumentException iae){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
         }catch (NoSuchElementException nsee){
