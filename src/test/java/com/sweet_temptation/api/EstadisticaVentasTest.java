@@ -56,9 +56,9 @@ public class EstadisticaVentasTest {
         when(validaciones.validarEstadoVenta("completada")).thenReturn(3);
 
         when(estadisticasRepository.findByEstadoAndFechaCompra(
+                eq(3),
                 any(LocalDateTime.class),
-                any(LocalDateTime.class),
-                eq(3)
+                any(LocalDateTime.class)
         )).thenReturn(List.of(pedido));
 
         List<PedidoDTO> resultado = estadisticasService.consultarVentasPorRangoYEstado(
@@ -73,7 +73,7 @@ public class EstadisticaVentasTest {
 
         verify(validaciones, times(1)).validarEstadoVenta("completada");
 
-        verify(estadisticasRepository, times(1)).findByEstadoAndFechaCompra(any(LocalDateTime.class), any(LocalDateTime.class), eq(3));
+        verify(estadisticasRepository, times(1)).findByEstadoAndFechaCompra(eq(3),any(LocalDateTime.class), any(LocalDateTime.class));
     }
 
 }

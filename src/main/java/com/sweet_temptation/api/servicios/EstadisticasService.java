@@ -14,6 +14,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+
 @Service
 public class EstadisticasService {
 
@@ -41,7 +42,7 @@ public class EstadisticasService {
 
         // Consulta en la BD
         List<Pedido> pedidos = estadisticasRepository
-                .findByEstadoAndFechaCompra(inicioDateTime, finDateTime, estado);
+                .findByEstadoAndFechaCompra(estado,inicioDateTime, finDateTime);
 
         if (pedidos == null || pedidos.isEmpty()) {
             throw new NoSuchElementException("No se encontraron ventas en el rango y estado indicados");

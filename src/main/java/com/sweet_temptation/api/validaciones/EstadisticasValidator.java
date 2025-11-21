@@ -1,7 +1,10 @@
 package com.sweet_temptation.api.validaciones;
 
+import org.springframework.stereotype.Component;
+
 import java.time.LocalDateTime;
 
+@Component
 public class EstadisticasValidator {
     // ========== Estadisticas de ventas ==========
 
