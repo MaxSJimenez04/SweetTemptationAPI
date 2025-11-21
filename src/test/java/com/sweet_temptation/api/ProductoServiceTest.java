@@ -99,21 +99,21 @@ public class ProductoServiceTest {
         Producto producto1 = productoEjemplo1(1); producto1.setIdCategoria(cat);
         Producto producto2 = productoEjemplo2(2); producto2.setIdCategoria(cat);
 
-        when(productoRepository.findByIDCategoria(cat)).thenReturn(Arrays.asList(producto1, producto2));
+        when(productoRepository.findByCategoria(cat)).thenReturn(Arrays.asList(producto1, producto2));
 
         var lista = productoService.consultarPorCategoria(cat);
 
         assertEquals(2, lista.size());
-        verify(productoRepository, times(1)).findByIDCategoria(cat);
+        verify(productoRepository, times(1)).findByCategoria(cat);
     }
 
     @Test
     void consultarPorCategoria_SinResultado(){
         int cat = 200;
-        when(productoRepository.findByIDCategoria(cat)).thenReturn(Collections.emptyList());
+        when(productoRepository.findByCategoria(cat)).thenReturn(Collections.emptyList());
 
         assertThrows(NoSuchElementException.class, () -> productoService.consultarPorCategoria(cat));
-        verify(productoRepository, times(1)).findByIDCategoria(cat);
+        verify(productoRepository, times(1)).findByCategoria(cat);
     }
 
     @Test
