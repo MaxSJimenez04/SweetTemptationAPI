@@ -75,7 +75,7 @@ jobs:
         run: docker build -t sweet-temptation-api .
 
       - name: Subir imagen a DockerHub
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/sweet-temptation-api:lastest
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/sweet-temptation-api
 
       - name: Iniciar Servicios
         run: docker-compose --env-file <(echo "SA_PASSWORD=${{ secrets.SA_PASSWORD }}") up -d --build
