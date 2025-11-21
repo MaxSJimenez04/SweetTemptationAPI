@@ -56,7 +56,7 @@ jobs:
           reporter: java-junit
 
   deploy:
-    runs-on: ubuntu-lastest
+    runs-on: ubuntu-latest
     needs: test
     steps:
       - name: Checkout
