@@ -14,7 +14,7 @@ public interface ProductoRepository extends JpaRepository<Producto,Integer> {
 
     List<DetallesProductoDTO> obtenerListaProductos(@Param("idPedido") int idPedido);
 
-    List<Producto> findByIDCategoria(Integer categoria);
+    List<Producto> findByCategoria(Integer categoria);
     List<Producto> findByNombre(String nombre);
     //Optional<Producto> findByID(Integer idProducto);
 

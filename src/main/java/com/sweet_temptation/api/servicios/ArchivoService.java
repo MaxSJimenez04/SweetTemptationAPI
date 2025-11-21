@@ -42,6 +42,7 @@ public class ArchivoService {
 
     public int guardarArchivo(ArchivoDTO archivoDTO) {
         validaciones.validarArchivoPeticion(archivoDTO);
+        validaciones.validarExtension(archivoDTO.getExtension());
         Archivo archivoNuevo = new Archivo();
         archivoNuevo.setDatos(archivoDTO.getDatos());
         archivoNuevo.setExtension(archivoDTO.getExtension());
@@ -71,8 +72,9 @@ public class ArchivoService {
         ImagenProducto asociacionBD =  imagenProductoRepository.findByIdProducto(idProducto);
         int idArchivo = asociacionBD.getIdArchivo();
         Archivo archivoBD = repository.getReferenceById(idArchivo);
+        validaciones.validarArchivo(archivoBD);
         DetallesArchivoDTO detallesArchivo = new DetallesArchivoDTO(archivoBD.getId(),
-                archivoBD.getFechaRegistro(), archivoBD.getExtension(), "http://localhost:8080/api/archivo/" + archivoBD.getId());
+                archivoBD.getFechaRegistro(), archivoBD.getExtension(), "http://localhost:8080/archivo/" + archivoBD.getId());
         return detallesArchivo;
     }
 

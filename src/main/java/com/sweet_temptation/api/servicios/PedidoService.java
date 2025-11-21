@@ -11,11 +11,15 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+//---
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import java.util.*;
+//---
 
 @Service
 public class PedidoService {
@@ -40,7 +44,7 @@ public class PedidoService {
     //Consultar pedidos en curso del empleado
     public List<PedidoDTO> consultarPedidosActuales(int idCliente){
         validaciones.validarIDCliente(idCliente);
-        List<Pedido> pedidosBD = pedidoRepository.findByIdClienteAndEstado(idCliente, 2);
+        List<Pedido> pedidosBD = pedidoRepository.findByIdClienteAndEstadoIn(idCliente, Arrays.asList(1,2));
 
         if(pedidosBD == null){
             throw new NoSuchElementException("No se encontraron pedidos");
@@ -54,14 +58,6 @@ public class PedidoService {
             pedidosActual.add(pedidoActual);
         }
         return pedidosActual;
-    }
-
-    public PedidoDTO consultarPedido(int idPedido){
-        validaciones.validarIDPedido(idPedido);
-        Pedido pedidoBD = pedidoRepository.getReferenceById(idPedido);
-        validaciones.validarPedido(pedidoBD);
-        return new PedidoDTO(pedidoBD.getId(), pedidoBD.getFechaCompra(), pedidoBD.getActual(),
-                pedidoBD.getTotal(), pedidoBD.getEstado(), pedidoBD.getPersonalizado(), pedidoBD.getIdCliente());
     }
 
     public void crearPedidoCliente(int idCliente){
@@ -81,6 +77,7 @@ public class PedidoService {
         validaciones.validarIDCliente(idEmpleado);
         pedidoNuevo.setIdCliente(idEmpleado);
         pedidoNuevo.setPersonalizado(false);
+        pedidoNuevo.setActual(true);
         pedidoNuevo.setEstado(1);
         pedidoNuevo.setTotal(BigDecimal.ZERO);
         pedidoNuevo.setFechaCompra(LocalDateTime.now());
@@ -128,5 +125,6 @@ public class PedidoService {
         validaciones.validarPedido(pedidoBD);
         pedidoRepository.delete(pedidoBD);
     }
-
 }
+
+

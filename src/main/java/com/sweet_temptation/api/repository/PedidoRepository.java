@@ -13,6 +13,6 @@ public interface PedidoRepository extends JpaRepository<Pedido,Integer> {
     Pedido findByActualTrueAndIdCliente(int  id);
 
     //Buscar los pedido en proceso del empleado
-    List<Pedido> findByIdClienteAndEstado(int  idCliente, int estado);
+    List<Pedido> findByIdClienteAndEstadoIn(int  idCliente, List<Integer> estado);
 
 }

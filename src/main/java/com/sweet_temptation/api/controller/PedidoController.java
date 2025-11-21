@@ -50,23 +50,11 @@ public class PedidoController {
         }
     }
 
-    @GetMapping(path = "/")
-    public ResponseEntity<?> getPedido(@RequestParam int idPedido){
-        try {
-            PedidoDTO pedido = pedidoService.consultarPedido(idPedido);
-            return ResponseEntity.status(HttpStatus.OK).body(pedido);
-        }catch(IllegalArgumentException iae) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
-        }catch(NoSuchElementException nsee){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
-        }
-    }
-
     @PostMapping(path = "/")
     public ResponseEntity<?> crearPedidoEmpleado(@RequestParam int idEmpleado){
         try{
-            pedidoService.crearPedidoEmpleado(idEmpleado);
-            return ResponseEntity.status(HttpStatus.CREATED).body(null);
+            PedidoDTO pedido = pedidoService.crearPedidoEmpleado(idEmpleado);
+            return ResponseEntity.status(HttpStatus.CREATED).body(pedido);
         }catch (IllegalArgumentException iae){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
         }

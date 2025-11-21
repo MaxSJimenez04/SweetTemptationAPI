@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ProductoPedidoTest {
+public class ProductoPedidoServiceTest {
     @Mock
     private ProductoPedidoRepository repository;
     @Mock
