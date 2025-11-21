@@ -129,46 +129,4 @@ public class PedidoService {
         pedidoRepository.delete(pedidoBD);
     }
 
-
-
-    // ========== Estadisticas de ventas ==========
-
-    @Transactional(readOnly = true)
-    public List<PedidoDTO> consultarVentasPorRangoYEstado(
-            LocalDate fechaInicio,
-            LocalDate fechaFin,
-            String estadoTexto
-    ) {
-        // para validar fechas
-        LocalDateTime inicioDateTime = fechaInicio.atStartOfDay();
-        LocalDateTime finDateTime = fechaFin.atTime(LocalTime.MAX);
-
-        validaciones.validarRangoFecha(inicioDateTime, finDateTime);
-
-        int estado = validaciones.validarEstadoVenta(estadoTexto);
-
-        // Consultar en BD
-        List<Pedido> pedidos = pedidoRepository
-                .findByEstadoAndFechaCompra(inicioDateTime, finDateTime, estado);
-
-        if (pedidos == null || pedidos.isEmpty()) {
-            throw new NoSuchElementException("No se encontraron ventas en el rango y estado indicados");
-        }
-
-        List<PedidoDTO> ventas = new ArrayList<>();
-        for (Pedido p : pedidos) {
-            PedidoDTO dto = new PedidoDTO(
-                    p.getId(),
-                    p.getFechaCompra(),
-                    p.getActual(),
-                    p.getTotal(),
-                    p.getEstado(),
-                    p.getPersonalizado(),
-                    p.getIdCliente()
-            );
-            ventas.add(dto);
-        }
-
-        return ventas;
-    }
 }

@@ -27,33 +27,4 @@ public class PedidoValidator {
     }
 
 
-    // ========== Estadisticas de ventas ==========
-
-    public void validarRangoFecha(LocalDateTime inicio, LocalDateTime fin){
-        if(inicio == null || fin == null){
-            throw new IllegalArgumentException("Las fechas no pueden ser nulas");
-        }
-        if(fin.isBefore(inicio)){
-                throw new IllegalArgumentException("La fecha de fin no puede ser antes de la fecha de inicio");
-        }
-    }
-
-    public int validarEstadoVenta(String estadoDescripcion){
-        if(estadoDescripcion == null){
-            throw new IllegalArgumentException("El estado no puede ser nulo");
-        }
-
-        String normalizado = estadoDescripcion.trim().toLowerCase();
-
-        switch (normalizado) {
-            case "completada":
-            case "completado":
-                return 3;
-            case "cancelada":
-            case "cancelado":
-                return 4;
-            default:
-                throw new IllegalArgumentException("Estado de venta inválido: " + estadoDescripcion);
-        }
-    }
 }

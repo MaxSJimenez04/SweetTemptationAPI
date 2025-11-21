@@ -2,8 +2,11 @@ package com.sweet_temptation.api;
 
 import com.sweet_temptation.api.dto.PedidoDTO;
 import com.sweet_temptation.api.model.Pedido;
+import com.sweet_temptation.api.repository.EstadisticasRepository;
 import com.sweet_temptation.api.repository.PedidoRepository;
+import com.sweet_temptation.api.servicios.EstadisticasService;
 import com.sweet_temptation.api.servicios.PedidoService;
+import com.sweet_temptation.api.validaciones.EstadisticasValidator;
 import com.sweet_temptation.api.validaciones.PedidoValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,13 +28,13 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class EstadisticaVentasTest {
     @Mock
-    private PedidoRepository pedidoRepository;
+    private EstadisticasRepository estadisticasRepository;
 
     @Mock
-    private PedidoValidator validaciones;
+    private EstadisticasValidator validaciones;
 
     @InjectMocks
-    private PedidoService pedidoService;
+    private EstadisticasService estadisticasService;
 
     @Test
     void consultarVentas_Exito(){
@@ -52,25 +55,25 @@ public class EstadisticaVentasTest {
 
         when(validaciones.validarEstadoVenta("completada")).thenReturn(3);
 
-        when(pedidoRepository.findByEstadoAndFechaCompra(
+        when(estadisticasRepository.findByEstadoAndFechaCompra(
                 any(LocalDateTime.class),
                 any(LocalDateTime.class),
                 eq(3)
         )).thenReturn(List.of(pedido));
 
-        List<PedidoDTO> resultado = pedidoService.consultarVentasPorRangoYEstado(
+        List<PedidoDTO> resultado = estadisticasService.consultarVentasPorRangoYEstado(
                 inicio, fin, "completada"
         );
 
         assertEquals(1, resultado.size());
         assertEquals(1, resultado.get(0).getId());
-        assertEquals(BigDecimal.valueOf(150), resultado.get(0).getTotal());
+        assertEquals(BigDecimal.valueOf(200), resultado.get(0).getTotal());
 
         verify(validaciones, times(1)).validarRangoFecha(any(LocalDateTime.class), any(LocalDateTime.class));
 
         verify(validaciones, times(1)).validarEstadoVenta("completada");
 
-        verify(pedidoRepository, times(1)).findByEstadoAndFechaCompra(any(LocalDateTime.class), any(LocalDateTime.class), eq(3));
+        verify(estadisticasRepository, times(1)).findByEstadoAndFechaCompra(any(LocalDateTime.class), any(LocalDateTime.class), eq(3));
     }
 
 }

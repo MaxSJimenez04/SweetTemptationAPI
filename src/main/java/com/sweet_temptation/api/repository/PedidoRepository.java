@@ -15,12 +15,4 @@ public interface PedidoRepository extends JpaRepository<Pedido,Integer> {
     //Buscar los pedido en proceso del empleado
     List<Pedido> findByIdClienteAndEstado(int  idCliente, int estado);
 
-    // ========== Estadisticas de ventas ==========
-
-    // Ventas por estado y rango de fechas
-    List<Pedido> findByEstadoAndFechaCompra(
-            LocalDateTime fechaInicio,
-            LocalDateTime fechaFin,
-            int estado
-    );
 }
