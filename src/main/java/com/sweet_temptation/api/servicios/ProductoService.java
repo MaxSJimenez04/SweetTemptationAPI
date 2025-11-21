@@ -40,7 +40,7 @@ public class ProductoService {
     @Transactional(readOnly = true)
     public List<ProductoDTO> consultarPorCategoria(int idCategoria){
         // TODO - Hacer una validacion para la categoria
-        List<Producto> lista = productoRepository.findByIDCategoria(idCategoria);
+        List<Producto> lista = productoRepository.findByCategoria(idCategoria);
         if(lista == null || lista.isEmpty()){
             throw new NoSuchElementException("No se encontraron productos para la categoria");
         }
