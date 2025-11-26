@@ -1,23 +1,23 @@
 package com.sweet_temptation.api.dto;
 
 public class LoginRequestDTO {
-    private String correo;
+    private String usuario;
     private String contrasena;
 
     public LoginRequestDTO() {
     }
 
-    public LoginRequestDTO(String correo, String contrasena) {
-        this.correo = correo;
+    public LoginRequestDTO(String usuario, String contrasena) {
+        this.usuario = usuario;
         this.contrasena = contrasena;
     }
 
-    public String getCorreo() {
-        return correo;
+    public String getUsuario() {
+        return usuario;
     }
 
-    public void setCorreo(String correo) {
-        this.correo = correo;
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
     public String getContrasena() {

@@ -2,6 +2,7 @@ package com.sweet_temptation.api.controller;
 
 import com.sweet_temptation.api.dto.LoginRequestDTO;
 import com.sweet_temptation.api.dto.LoginResponseDTO;
+import com.sweet_temptation.api.model.Usuario;
 import com.sweet_temptation.api.security.CustomUserDetailsService;
 import com.sweet_temptation.api.security.JwtService;
 import org.springframework.http.HttpStatus;
@@ -34,16 +35,23 @@ public class AuthController {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            loginRequest.getCorreo(),
+                            loginRequest.getUsuario(),
                             loginRequest.getContrasena()
                     )
             );
 
-            String correo = loginRequest.getCorreo();
-            String rol = userDetailsService.getRolByCorreo(correo);
-            String token = jwtService.generateToken(correo, rol);
+            String username = loginRequest.getUsuario();
+            Usuario usuarioCompleto = userDetailsService.getUsuarioCompleto(username);
+            String rol = userDetailsService.getRolByUsuario(username);
+            String token = jwtService.generateToken(username, rol);
 
-            LoginResponseDTO response = new LoginResponseDTO(token, correo, rol);
+            LoginResponseDTO response = new LoginResponseDTO(
+                    token,
+                    usuarioCompleto.getId(),
+                    usuarioCompleto.getNombre(),
+                    usuarioCompleto.getCorreo(),
+                    rol
+            );
             return ResponseEntity.ok(response);
 
         } catch (BadCredentialsException e) {
