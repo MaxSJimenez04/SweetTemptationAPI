@@ -23,7 +23,7 @@ public class JwtService {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
-    public String extractCorreo(String token) {
+    public String extractUsuario(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -36,16 +36,16 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(String correo, String rol) {
+    public String generateToken(String usuario, String rol) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("rol", rol);
-        return generateToken(claims, correo);
+        return generateToken(claims, usuario);
     }
 
-    public String generateToken(Map<String, Object> extraClaims, String correo) {
+    public String generateToken(Map<String, Object> extraClaims, String usuario) {
         return Jwts.builder()
                 .claims(extraClaims)
-                .subject(correo)
+                .subject(usuario)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSignInKey(), Jwts.SIG.HS256)
@@ -53,8 +53,8 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String correo = extractCorreo(token);
-        return (correo.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        final String usuario = extractUsuario(token);
+        return (usuario.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
