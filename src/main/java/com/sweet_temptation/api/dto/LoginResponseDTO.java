@@ -2,14 +2,18 @@ package com.sweet_temptation.api.dto;
 
 public class LoginResponseDTO {
     private String token;
+    private int id;
+    private String nombre;
     private String correo;
     private String rol;
 
     public LoginResponseDTO() {
     }
 
-    public LoginResponseDTO(String token, String correo, String rol) {
+    public LoginResponseDTO(String token, int id, String nombre, String correo, String rol) {
         this.token = token;
+        this.id = id;
+        this.nombre = nombre;
         this.correo = correo;
         this.rol = rol;
     }
@@ -20,6 +24,22 @@ public class LoginResponseDTO {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public String getCorreo() {
