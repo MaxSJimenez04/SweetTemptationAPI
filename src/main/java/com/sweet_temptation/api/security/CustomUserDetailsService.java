@@ -25,23 +25,28 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String correo) throws UsernameNotFoundException {
-        Usuario usuario = usuarioRepository.findByCorreo(correo)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con correo: " + correo));
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Usuario usuario = usuarioRepository.findByUsuario(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
 
         Rol rol = rolRepository.findById(usuario.getIdRol())
                 .orElseThrow(() -> new UsernameNotFoundException("Rol no encontrado para el usuario"));
 
         return new User(
-                usuario.getCorreo(),
+                usuario.getUsuario(),
                 usuario.getContrasena(),
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + rol.getRol().toUpperCase()))
         );
     }
 
-    public String getRolByCorreo(String correo) {
-        Usuario usuario = usuarioRepository.findByCorreo(correo)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con correo: " + correo));
+    public Usuario getUsuarioCompleto(String username) {
+        return usuarioRepository.findByUsuario(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
+    }
+
+    public String getRolByUsuario(String username) {
+        Usuario usuario = usuarioRepository.findByUsuario(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
 
         Rol rol = rolRepository.findById(usuario.getIdRol())
                 .orElseThrow(() -> new UsernameNotFoundException("Rol no encontrado para el usuario"));
