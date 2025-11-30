@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-@Controller
-@RequestMapping(path = "/pago")
+@RestController
+@RequestMapping("/pago")
 public class PagoController {
 
     @Autowired
