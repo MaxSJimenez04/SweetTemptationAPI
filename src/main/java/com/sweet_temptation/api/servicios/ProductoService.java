@@ -131,6 +131,24 @@ public class ProductoService {
         productoRepository.deleteById(idProductoEliminar);
     }
 
+    @Transactional(readOnly = true)
+    public ProductoDTO consultarProductoPorNombre(String nombre){
+        // 1. Usar el nuevo método del repositorio (findByNombre), el cual debe devolver List<Producto>
+        // Si tu repositorio tiene 'List<Producto> findByNombre(String nombre);', este es el método correcto.
+        List<Producto> productos = productoRepository.findByNombre(nombre);
+
+        // 2. Verificar si la lista está vacía. Si lo está, el producto no existe y lanzamos la excepción.
+        if (productos.isEmpty()) {
+            throw new NoSuchElementException("Producto no encontrado con nombre: " + nombre);
+        }
+
+        // 3. Si la lista no está vacía, tomamos el primer producto encontrado (asumiendo unicidad por nombre).
+        Producto pro = productos.get(0);
+
+        // 4. Devolver el DTO del producto encontrado.
+        return toDTO(pro);
+    }
+
     private ProductoDTO toDTO(Producto producto){
         return new ProductoDTO(
                 producto.getId(),
