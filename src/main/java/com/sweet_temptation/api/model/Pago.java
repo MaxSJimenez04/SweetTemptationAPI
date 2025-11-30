@@ -17,7 +17,7 @@ public class Pago {
     @Column(precision = 9, scale = 2, nullable = false)
     private BigDecimal total;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column
     private LocalDateTime fechaPago;
 
     @Column(length = 25)
