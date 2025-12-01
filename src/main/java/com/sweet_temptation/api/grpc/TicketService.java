@@ -62,12 +62,12 @@ public class TicketService extends TicketServiceGrpc.TicketServiceImplBase{
     }
 
 
-    private List<DetallesProductoDTO> obtenerProductos(int idPedido){
+    public List<DetallesProductoDTO> obtenerProductos(int idPedido){
         List<DetallesProductoDTO> lista = productoRepository.obtenerListaProductos(idPedido);
         return lista;
     }
 
-    private PedidoDTO obtenerDetallesPedido(int idPedido){
+    public PedidoDTO obtenerDetallesPedido(int idPedido){
         Pedido respuesta = pedidoRepository.findById(idPedido).orElse(null);
         if (respuesta != null) {
             return new PedidoDTO(respuesta.getId(), respuesta.getFechaCompra(), respuesta.getActual(),respuesta.getTotal()
@@ -77,7 +77,7 @@ public class TicketService extends TicketServiceGrpc.TicketServiceImplBase{
         }
     }
 
-    private byte[] crearEstructura(List<DetallesProductoDTO> lista, PedidoDTO detallesPedido){
+    public byte[] crearEstructura(List<DetallesProductoDTO> lista, PedidoDTO detallesPedido){
         byte[] ticketArray;
         try(ByteArrayOutputStream out = new ByteArrayOutputStream();
             PDDocument ticket = new PDDocument()){
