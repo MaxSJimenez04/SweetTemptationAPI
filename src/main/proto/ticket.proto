@@ -5,7 +5,7 @@ option java_package = "com.sweettemptation.grpc";
 option java_outer_classname = "Ticket";
 
 service TicketService {
-  rpc GenerarTicket (TicketRequest) returns (TicketResponse);
+  rpc generarTicket (TicketRequest) returns (TicketResponse);
 }
 
 message TicketRequest {
