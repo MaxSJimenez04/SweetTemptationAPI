@@ -24,6 +24,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -54,7 +55,7 @@ public class TicketService extends TicketServiceGrpc.TicketServiceImplBase{
         List<DetallesProductoDTO> productos = obtenerProductos(request.getIdPedido());
         PedidoDTO detallesPedido = obtenerDetallesPedido(request.getIdPedido());
         byte[] ticket = crearEstructura(productos, detallesPedido);
-        String filename = "ticket_pedido" + detallesPedido.getId();
+        String filename = "ticket_pedido" + detallesPedido.getId() + ".pdf";
         TicketResponse respuesta = TicketResponse.newBuilder().setFileName(filename).setPdf(ByteString.copyFrom(ticket)).build();
         responseObserver.onNext(respuesta);
         responseObserver.onCompleted();
@@ -85,12 +86,12 @@ public class TicketService extends TicketServiceGrpc.TicketServiceImplBase{
             float margenDer = 15f;
             float margenArriba = 10f;
             float margenAbajo = 10f;
-            int tamanoTitulos = 25;
-            int tamanoFuente = 20;
-            int tamanoFuenteProductos = 14;
-            int tamanoTotal = 17;
+            int tamanoTitulos = 15;
+            int tamanoFuente = 10;
+            int tamanoFuenteProductos = 7;
+            int tamanoTotal = 9;
             String fechaCompra = detallesPedido.getFechaCompra().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
-            PDPage pagina = new PDPage(new PDRectangle(anchoTicket, PDRectangle.LETTER.getHeight()));
+            PDPage pagina = new PDPage(new PDRectangle(anchoTicket, 600));
             ticket.addPage(pagina);
 
             PDPageContentStream contentStream = new PDPageContentStream(ticket, pagina);
@@ -100,29 +101,30 @@ public class TicketService extends TicketServiceGrpc.TicketServiceImplBase{
             PDImageXObject imagen = PDImageXObject.createFromFile("src/main/resources/iconos/img.png", ticket);
             float anchoImagen = 100;
             float alturaImagen = 100;
-            float x = (anchoImagen - anchoImagen) / 2;
-            contentStream.drawImage(imagen, x, y, anchoImagen, alturaImagen);
-            y -= 10;
+            float x = (anchoTicket - anchoImagen) / 2;
+            contentStream.drawImage(imagen, x, y - alturaImagen, anchoImagen, alturaImagen);
+            y -= alturaImagen + 15;
             contentStream.setFont(fuente, 20);
             centrarTexto(contentStream, fuenteNegrita, tamanoTitulos, "SWEET TEMPTATION", anchoTicket, y);
-            y -= 5;
+            y -= tamanoTitulos + 5;
             centrarTexto(contentStream, fuenteNegrita, tamanoFuente, "Repostería", anchoTicket, y);
-            y -= 5;
+            y -= tamanoFuente + 5;
             centrarTexto(contentStream, fuente, tamanoFuente, "Recibo de compra", anchoTicket, y);
-            y -= 5;
+            y -= tamanoFuente + 5;
             centrarTexto(contentStream, fuente, tamanoFuente, "No. Pedido: " + detallesPedido.getId(), anchoTicket, y);
-            y -= 5;
+            y -= tamanoFuente + 5;
             centrarTexto(contentStream, fuente, tamanoFuente,
                     "Fecha de compra: " + fechaCompra,
                     anchoTicket, y);
-            y -= 10;
+            y -=tamanoFuente + 10;
             float anchoSeparacion = anchoTicket - margenIzq - margenDer;
-            int totalGato = (int)(anchoSeparacion / (fuente.getStringWidth(".") / 1000 * tamanoFuente));
+            int totalGato = (int)(anchoSeparacion / (fuente.getStringWidth("#") / 1000 * tamanoFuente));
             String gato = "#".repeat(Math.max(0, totalGato));
             contentStream.beginText();
             contentStream.newLineAtOffset(margenIzq, y);
             contentStream.showText(gato);
             contentStream.endText();
+            y -= tamanoFuente + 10;
             for(DetallesProductoDTO detalles: lista){
                 if (y <= margenArriba + 15) {
 
@@ -140,31 +142,36 @@ public class TicketService extends TicketServiceGrpc.TicketServiceImplBase{
                 String precio = detalles.getPrecio().toString();
                 escribirProductos(contentStream, fuente, tamanoFuenteProductos, anchoTicket, y, margenIzq, margenDer,
                         cantidad, detalles.getNombre(), precio);
-                y -= 7;
+                y -= tamanoFuenteProductos + 7;
             }
+
+            totalGato = (int)(anchoSeparacion / (fuente.getStringWidth("#") / 1000 * tamanoFuenteProductos));
+            gato = "#".repeat(Math.max(0, totalGato));
             contentStream.beginText();
             contentStream.newLineAtOffset(margenIzq, y);
             contentStream.showText(gato);
             contentStream.endText();
-            y -= 10;
+            y -= tamanoFuente + 10;
             BigDecimal totalSinIva = calcularSinIva(detallesPedido.getTotal());
             escribirTotal(contentStream, fuente, tamanoTotal, margenIzq, margenDer, y, anchoSeparacion,
                     "Subtotal", totalSinIva.toString());
-            y -= 5;
+            y -= tamanoTotal + 5;
             escribirTotal(contentStream, fuente, tamanoTotal, margenIzq, margenDer, y, anchoSeparacion,
                     "IVA: ", "16%");
-            y -= 5;
+            y -= tamanoTotal + 5;
 
             escribirTotal(contentStream, fuenteNegrita, tamanoTotal, margenIzq, margenDer, y,
                     anchoSeparacion,"Total: " ,detallesPedido.getTotal().toString());
-            y -= 5;
+            y -= tamanoTotal + 5;
+
+            totalGato = (int)(anchoSeparacion / (fuenteNegrita.getStringWidth("#") / 1000 * tamanoTotal));
+            gato = "#".repeat(Math.max(0, totalGato));
             contentStream.beginText();
             contentStream.newLineAtOffset(margenIzq, y);
             contentStream.showText(gato);
             contentStream.endText();
-            y -= 5;
-            centrarTexto(contentStream, fuente, tamanoTitulos, "GRACIAS POR TU COMPRA", anchoTicket, y);
-
+            y -= tamanoFuente + 5;
+            centrarTexto(contentStream, fuente, tamanoTotal, "GRACIAS POR TU COMPRA", anchoTicket, y);
             contentStream.close();
             ticket.save(out);
             ticketArray = out.toByteArray();
@@ -268,7 +275,9 @@ public class TicketService extends TicketServiceGrpc.TicketServiceImplBase{
     BigDecimal calcularSinIva(BigDecimal valor) {
         double valorParseado = Double.parseDouble(valor.toString());
         double valorSinIva = valorParseado / 1.16;
-        return BigDecimal.valueOf(valorSinIva);
+        BigDecimal valorRedondeado = BigDecimal.valueOf(valorSinIva);
+        valorRedondeado = valorRedondeado.setScale(2, RoundingMode.HALF_UP);
+        return valorRedondeado;
     }
 
 }
