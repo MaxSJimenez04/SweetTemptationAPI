@@ -1,5 +1,6 @@
 package com.sweet_temptation.api.security;
 
+import net.devh.boot.grpc.server.security.authentication.GrpcAuthenticationReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -67,6 +68,11 @@ public class SecurityConfig {
         // Para desarrollo: contraseñas en texto plano (NO usar en producción)
         return org.springframework.security.crypto.password.NoOpPasswordEncoder.getInstance();
         // Para producción descomentar: return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public GrpcAuthenticationReader grpcAuthenticationReader() {
+        return (context, headers) -> null; // No autentica, devuelve null
     }
 }
 
