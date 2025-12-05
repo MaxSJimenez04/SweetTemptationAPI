@@ -9,12 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
 public class ProductoService {
+
     private final ProductoRepository productoRepository;
     private final ProductoValidator validaciones;
 
@@ -23,31 +23,48 @@ public class ProductoService {
         this.validaciones = validaciones;
     }
 
+    // ============================================================
+    // CONSULTAR
+    // ============================================================
     @Transactional(readOnly = true)
-    public ProductoDTO consultarProducto(int idProducto){
+    public ProductoDTO consultarProducto(int idProducto) {
         validaciones.validarIDProducto(idProducto);
+
         Producto pro = productoRepository.findById(idProducto)
                 .orElseThrow(() -> new NoSuchElementException("Producto no encontrado: " + idProducto));
+
         validaciones.validarProducto(pro);
+
         return toDTO(pro);
     }
 
     @Transactional(readOnly = true)
-    public List<ProductoDTO> consultarProductos(){
-        return productoRepository.findAll().stream().map(this::toDTO).toList();
+    public List<ProductoDTO> consultarProductos() {
+        return productoRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<ProductoDTO> consultarPorCategoria(int idCategoria){
-        // TODO - Hacer una validacion para la categoria
+    public List<ProductoDTO> consultarPorCategoria(int idCategoria) {
+
         List<Producto> lista = productoRepository.findByCategoria(idCategoria);
-        if(lista == null || lista.isEmpty()){
-            throw new NoSuchElementException("No se encontraron productos para la categoria");
+
+        if (lista == null || lista.isEmpty()) {
+            throw new NoSuchElementException("No se encontraron productos para la categoría indicada.");
         }
-        return  lista.stream().map(this::toDTO).toList();
+
+        return lista.stream().map(this::toDTO).toList();
     }
 
-    public int crearProducto(ProductoDTO producto){
+
+    // ============================================================
+    // CREAR PRODUCTO (CON VALIDACIÓN DE DUPLICADO)
+    // ============================================================
+    public int crearProducto(ProductoDTO producto) {
+
+        // 🔥 Validación completa (incluye ver duplicados)
         validaciones.validarProductoNuevo(producto);
 
         Producto nuevo = new Producto();
@@ -56,19 +73,26 @@ public class ProductoService {
         nuevo.setPrecio(producto.getPrecio());
         nuevo.setDisponible(producto.getDisponible());
         nuevo.setUnidades(producto.getUnidades());
-        nuevo.setIdCategoria(producto.getCategoria());
+        nuevo.setCategoria(producto.getCategoria());
         nuevo.setFechaRegistro(LocalDateTime.now());
         nuevo.setFechaModificacion(LocalDateTime.now());
 
         Producto guardado = productoRepository.save(nuevo);
+
         validaciones.validarProducto(guardado);
-        //return  toDTO(guardado);
 
         return guardado.getId();
     }
 
-    public ProductoDTO actualizarProducto(int idProducto, ProductoDTO producto){
+
+    // ============================================================
+    // ACTUALIZAR PRODUCTO
+    // ============================================================
+    public ProductoDTO actualizarProducto(int idProducto, ProductoDTO producto) {
+
         validaciones.validarIDProducto(idProducto);
+        validaciones.validarProductoModificado(producto);
+
         Producto actual = productoRepository.findById(idProducto)
                 .orElseThrow(() -> new NoSuchElementException("Producto no encontrado: " + idProducto));
 
@@ -77,19 +101,25 @@ public class ProductoService {
         actual.setPrecio(producto.getPrecio());
         actual.setDisponible(producto.getDisponible());
         actual.setUnidades(producto.getUnidades());
-        actual.setIdCategoria(producto.getCategoria());
+        actual.setCategoria(producto.getCategoria());
         actual.setFechaModificacion(LocalDateTime.now());
 
-        Producto actualizado= productoRepository.save(actual);
-        return  toDTO(actualizado);
+        Producto actualizado = productoRepository.save(actual);
+
+        return toDTO(actualizado);
     }
 
-    public ProductoDTO actualizarPrecio(int idProducto, BigDecimal precioNuevo){
+
+    // ============================================================
+    // ACTUALIZAR SOLO PRECIO
+    // ============================================================
+    public ProductoDTO actualizarPrecio(int idProducto, BigDecimal precioNuevo) {
+
         validaciones.validarIDProducto(idProducto);
         validaciones.validarPrecio(precioNuevo);
 
         Producto producto = productoRepository.findById(idProducto)
-                .orElseThrow(() -> new NoSuchElementException("Producto no encontrado: " + idProducto));
+                .orElseThrow(() -> new NoSuchElementException("Producto no encontrado"));
 
         producto.setPrecio(precioNuevo);
         producto.setFechaModificacion(LocalDateTime.now());
@@ -97,12 +127,19 @@ public class ProductoService {
         return toDTO(productoRepository.save(producto));
     }
 
-    public ProductoDTO modificarInventario(int idProducto, int unidadesProducto){
+
+    // ============================================================
+    // INVENTARIO
+    // ============================================================
+    public ProductoDTO modificarInventario(int idProducto, int unidadesProducto) {
+
         validaciones.validarIDProducto(idProducto);
+
         Producto producto = productoRepository.findById(idProducto)
                 .orElseThrow(() -> new NoSuchElementException("Producto no encontrado: " + idProducto));
 
         int nuevoStock = producto.getUnidades() + unidadesProducto;
+
         validaciones.validarStock(nuevoStock);
 
         producto.setUnidades(nuevoStock);
@@ -111,10 +148,16 @@ public class ProductoService {
         return toDTO(productoRepository.save(producto));
     }
 
-    public ProductoDTO cambiarDisponibilidad(int idProducto, boolean disponible){
+
+    // ============================================================
+    // DISPONIBILIDAD
+    // ============================================================
+    public ProductoDTO cambiarDisponibilidad(int idProducto, boolean disponible) {
+
         validaciones.validarIDProducto(idProducto);
+
         Producto producto = productoRepository.findById(idProducto)
-                .orElseThrow(() -> new NoSuchElementException("Producto no encontrado: " + idProducto));
+                .orElseThrow(() -> new NoSuchElementException("Producto no encontrado"));
 
         producto.setDisponible(disponible);
         producto.setFechaModificacion(LocalDateTime.now());
@@ -122,34 +165,42 @@ public class ProductoService {
         return toDTO(productoRepository.save(producto));
     }
 
+
+    // ============================================================
+    // ELIMINAR
+    // ============================================================
     public void eliminarProducto(int idProductoEliminar) {
+
         validaciones.validarIDProducto(idProductoEliminar);
-        //productoRepository.existsById(idProductoEliminar);
+
         if (!productoRepository.existsById(idProductoEliminar)) {
-            throw new NoSuchElementException("Producto no encontrado: " + idProductoEliminar);
+            throw new NoSuchElementException("Producto no encontrado");
         }
+
         productoRepository.deleteById(idProductoEliminar);
     }
 
+
+    // ============================================================
+    // CONSULTAR POR NOMBRE
+    // ============================================================
     @Transactional(readOnly = true)
-    public ProductoDTO consultarProductoPorNombre(String nombre){
-        // 1. Usar el nuevo método del repositorio (findByNombre), el cual debe devolver List<Producto>
-        // Si tu repositorio tiene 'List<Producto> findByNombre(String nombre);', este es el método correcto.
+    public ProductoDTO consultarProductoPorNombre(String nombre) {
+
         List<Producto> productos = productoRepository.findByNombre(nombre);
 
-        // 2. Verificar si la lista está vacía. Si lo está, el producto no existe y lanzamos la excepción.
         if (productos.isEmpty()) {
             throw new NoSuchElementException("Producto no encontrado con nombre: " + nombre);
         }
 
-        // 3. Si la lista no está vacía, tomamos el primer producto encontrado (asumiendo unicidad por nombre).
-        Producto pro = productos.get(0);
-
-        // 4. Devolver el DTO del producto encontrado.
-        return toDTO(pro);
+        return toDTO(productos.get(0));
     }
 
-    private ProductoDTO toDTO(Producto producto){
+
+    // ============================================================
+    // DTO CONVERTER
+    // ============================================================
+    private ProductoDTO toDTO(Producto producto) {
         return new ProductoDTO(
                 producto.getId(),
                 producto.getNombre(),
@@ -159,7 +210,8 @@ public class ProductoService {
                 producto.getUnidades(),
                 producto.getFechaRegistro(),
                 producto.getFechaModificacion(),
-                producto.getIdCategoria()
+                producto.getCategoria()
         );
     }
 }
+

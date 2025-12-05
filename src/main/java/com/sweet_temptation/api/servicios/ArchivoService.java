@@ -78,6 +78,8 @@ public class ArchivoService {
         return detallesArchivo;
     }
 
+
+
     public ArchivoDTO obtenerArchivo(int idArchivo){
         validaciones.validarIDArchivo(idArchivo);
         Archivo archivoBD = repository.getReferenceById(idArchivo);

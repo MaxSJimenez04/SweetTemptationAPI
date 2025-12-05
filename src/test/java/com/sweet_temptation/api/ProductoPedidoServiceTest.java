@@ -36,18 +36,21 @@ public class ProductoPedidoServiceTest {
     @Mock
     private PedidoRepository  pedidoRepository;
     @Mock
-    private ProductoPedidoValidator validaciones = new ProductoPedidoValidator();
+    private ProductoPedidoValidator validaciones;
     @Mock
-    private ProductoValidator productoValidator = new ProductoValidator();
+    private ProductoValidator productoValidator;
     @Mock
-    private PedidoValidator  pedidoValidator = new PedidoValidator();
+    private PedidoValidator pedidoValidator;
 
     private static final Producto producto1 = new Producto(1, "Brownie", "Brownie de chocolate",
-            BigDecimal.valueOf(25.00), true, 52, LocalDateTime.now(), null, 6);
+            BigDecimal.valueOf(25.00), true, 52, LocalDateTime.now(), LocalDateTime.now(), 6);
+
     private static final Producto producto2 = new Producto(1, "Pastel de fresa", "Pastel de bizcocho de fresa con crema batida",
-            BigDecimal.valueOf(25.00), true, 52, LocalDateTime.now(), null, 1);
-    private static  final Producto producto3  = new Producto(1, "Pay de limón", "Pay de limón con ralladura de limón",
-            BigDecimal.valueOf(25.00), true, 52, LocalDateTime.now(), null, 8);
+            BigDecimal.valueOf(25.00), true, 52, LocalDateTime.now(), LocalDateTime.now(), 1);
+
+    private static final Producto producto3 = new Producto(1, "Pay de limón", "Pay de limón con ralladura de limón",
+            BigDecimal.valueOf(25.00), true, 52, LocalDateTime.now(), LocalDateTime.now(), 8);
+
     private final Pedido pedido1 = new Pedido(1, LocalDateTime.now(), true,
             BigDecimal.valueOf(500.50), 2, false, 1);
     private ProductoPedido productoPedido = new ProductoPedido();

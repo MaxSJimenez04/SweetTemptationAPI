@@ -113,11 +113,11 @@ public class Producto {
         this.fechaModificacion = fechaModificacion;
     }
 
-    public int getIdCategoria() {
+    public int getCategoria() {
         return categoria;
     }
 
-    public void setIdCategoria(int categoria) {
+    public void setCategoria(int categoria) {
         this.categoria = categoria;
     }
 }

@@ -96,8 +96,8 @@ public class ProductoServiceTest {
     @Test
     void consultarPorCategoria_Exito(){
         int cat = 2;
-        Producto producto1 = productoEjemplo1(1); producto1.setIdCategoria(cat);
-        Producto producto2 = productoEjemplo2(2); producto2.setIdCategoria(cat);
+        Producto producto1 = productoEjemplo1(1); producto1.setCategoria(cat);
+        Producto producto2 = productoEjemplo2(2); producto2.setCategoria(cat);
 
         when(productoRepository.findByCategoria(cat)).thenReturn(Arrays.asList(producto1, producto2));
 
@@ -215,7 +215,7 @@ public class ProductoServiceTest {
         producto.setPrecio(BigDecimal.valueOf(39.50));
         producto.setDisponible(true);
         producto.setUnidades(50);
-        producto.setIdCategoria(1);
+        producto.setCategoria(1);
         producto.setFechaRegistro(LocalDateTime.now().minusDays(1));
         producto.setFechaModificacion(LocalDateTime.now().minusHours(1));
         return producto;
@@ -229,7 +229,7 @@ public class ProductoServiceTest {
         producto.setPrecio(BigDecimal.valueOf(88.50));
         producto.setDisponible(true);
         producto.setUnidades(35);
-        producto.setIdCategoria(6);
+        producto.setCategoria(6);
         producto.setFechaRegistro(LocalDateTime.now().minusDays(1));
         producto.setFechaModificacion(LocalDateTime.now().minusHours(1));
         return producto;
