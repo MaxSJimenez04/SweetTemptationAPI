@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class ProductoDTO {
+
     int id;
     String nombre;
     String descripcion;
@@ -14,7 +15,14 @@ public class ProductoDTO {
     LocalDateTime fechaModificacion;
     int categoria;
 
-    public ProductoDTO(int id, String nombre, String descripcion, BigDecimal precio,boolean disponible, int unidades, LocalDateTime fechaRegistro, LocalDateTime fechaModificacion, int categoria ){
+    public ProductoDTO() {
+    }
+
+    public ProductoDTO(int id, String nombre, String descripcion, BigDecimal precio,
+                       boolean disponible, int unidades,
+                       LocalDateTime fechaRegistro, LocalDateTime fechaModificacion,
+                       int categoria) {
+
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -24,9 +32,6 @@ public class ProductoDTO {
         this.fechaRegistro = fechaRegistro;
         this.fechaModificacion = fechaModificacion;
         this.categoria = categoria;
-    }
-
-    public ProductoDTO(int id, String nombre, String descripcion, BigDecimal precio, int disponible, int unidades, LocalDateTime fechaRegistro, LocalDateTime fechaModificacion) {
     }
 
     public int getId() { return id; }
@@ -66,3 +71,4 @@ public class ProductoDTO {
 
     public void setCategoria(int categoria) { this.categoria = categoria; }
 }
+

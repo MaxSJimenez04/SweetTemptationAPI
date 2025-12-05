@@ -45,7 +45,8 @@ public class ProductoController {
     public ResponseEntity<?> crearProducto(@RequestBody ProductoDTO nuevoProducto){
         try{
             int idProductoNuevo = productoService.crearProducto(nuevoProducto);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Producto creado con el id:" + idProductoNuevo);
+            return ResponseEntity.ok(idProductoNuevo);
+
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

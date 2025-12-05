@@ -28,9 +28,17 @@ public class ArchivoValidator {
     }
 
     public void validarExtension(String extension){
-        if (!(extension.equals("jpg") || extension.equals("png") || extension.equals("jpeg"))) {
-            throw new IllegalArgumentException("Formato de extension del archivo no es valido");
+        if (extension == null) throw new IllegalArgumentException("La extensión es nula");
+
+        extension = extension.trim().toLowerCase();
+
+        if (!extension.equals("jpg") &&
+                !extension.equals("png") &&
+                !extension.equals("jpeg"))
+        {
+            throw new IllegalArgumentException("Formato de extensión no válido");
         }
     }
+
 
 }
