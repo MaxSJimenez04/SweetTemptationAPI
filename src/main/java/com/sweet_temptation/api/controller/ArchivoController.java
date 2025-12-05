@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
+
 @RestController
 @RequestMapping("/archivo")
 public class ArchivoController {
@@ -19,64 +20,52 @@ public class ArchivoController {
     @Autowired
     private ArchivoService archivoService;
 
-    // ------------------------------ GUARDAR ARCHIVO ------------------------------
     @PostMapping
     public ResponseEntity<?> guardarArchivo(@RequestBody ArchivoDTO archivoDTO) {
         try {
             int idArchivo = archivoService.guardarArchivo(archivoDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(idArchivo);
-
         } catch (IllegalArgumentException iae) {
             return ResponseEntity.badRequest().body(iae.getMessage());
-
         } catch (NoSuchElementException nsee) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
         }
     }
 
-    // ------------------------------ ASOCIAR ARCHIVO A PRODUCTO ------------------------------
-    @PostMapping("/asociar/{idArchivo}/{idProducto}")
+    @PutMapping("/asociar/{idArchivo}/{idProducto}")
     public ResponseEntity<?> asociarArchivo(
             @PathVariable int idArchivo,
             @PathVariable int idProducto) {
 
         try {
             archivoService.asociarArchivo(idArchivo, idProducto);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-
+            return ResponseEntity.status(HttpStatus.OK).build(); // Usar 200 OK para PUT exitoso
         } catch (IllegalArgumentException iae) {
             return ResponseEntity.badRequest().body(iae.getMessage());
-
         } catch (NoSuchElementException nsee) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
         }
     }
 
-    // ------------------------------ OBTENER DETALLES ------------------------------
-    @GetMapping
+    @GetMapping("/detalle")
     public ResponseEntity<?> obtenerDetallesArchivo(@RequestParam int idProducto) {
         try {
             DetallesArchivoDTO detalles = archivoService.obtenerDatosArchivo(idProducto);
             return ResponseEntity.ok(detalles);
-
         } catch (IllegalArgumentException iae) {
             return ResponseEntity.badRequest().body(iae.getMessage());
-
         } catch (NoSuchElementException nsee) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
         }
     }
 
-    // ------------------------------ OBTENER ARCHIVO (BY ID) ------------------------------
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerImagen(@PathVariable int id) {
         try {
             ArchivoDTO respuesta = archivoService.obtenerArchivo(id);
             return ResponseEntity.ok(respuesta);
-
         } catch (IllegalArgumentException iae) {
             return ResponseEntity.badRequest().body(iae.getMessage());
-
         } catch (NoSuchElementException nsee) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
         }

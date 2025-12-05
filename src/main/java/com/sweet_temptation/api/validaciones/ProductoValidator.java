@@ -16,9 +16,6 @@ public class ProductoValidator {
         this.productoRepository = productoRepository;
     }
 
-    // -----------------------------
-    // VALIDAR PRODUCTO EXISTENTE POR ID
-    // -----------------------------
     public void validarIDProducto(int idProducto){
         if(idProducto <= 0)
             throw new IllegalArgumentException("El ID del producto es inválido");
@@ -41,9 +38,6 @@ public class ProductoValidator {
             throw new IllegalArgumentException("La categoría no coincide");
     }
 
-    // -----------------------------
-    // VALIDAR NUEVO PRODUCTO
-    // -----------------------------
     public void validarProductoNuevo(ProductoDTO producto){
         if(producto == null)
             throw new IllegalArgumentException("El producto es nulo");
@@ -62,9 +56,6 @@ public class ProductoValidator {
             throw new IllegalArgumentException("Las unidades no pueden ser negativas");
     }
 
-    // -----------------------------
-    // VALIDAR PRODUCTO MODIFICADO
-    // -----------------------------
     public void validarProductoModificado(ProductoDTO producto){
         if(producto == null)
             throw new IllegalArgumentException("El producto es nulo");

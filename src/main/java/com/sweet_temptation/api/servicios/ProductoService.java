@@ -23,9 +23,6 @@ public class ProductoService {
         this.validaciones = validaciones;
     }
 
-    // ============================================================
-    // CONSULTAR
-    // ============================================================
     @Transactional(readOnly = true)
     public ProductoDTO consultarProducto(int idProducto) {
         validaciones.validarIDProducto(idProducto);
@@ -58,13 +55,8 @@ public class ProductoService {
         return lista.stream().map(this::toDTO).toList();
     }
 
-
-    // ============================================================
-    // CREAR PRODUCTO (CON VALIDACIÓN DE DUPLICADO)
-    // ============================================================
     public int crearProducto(ProductoDTO producto) {
 
-        // 🔥 Validación completa (incluye ver duplicados)
         validaciones.validarProductoNuevo(producto);
 
         Producto nuevo = new Producto();
@@ -84,10 +76,6 @@ public class ProductoService {
         return guardado.getId();
     }
 
-
-    // ============================================================
-    // ACTUALIZAR PRODUCTO
-    // ============================================================
     public ProductoDTO actualizarProducto(int idProducto, ProductoDTO producto) {
 
         validaciones.validarIDProducto(idProducto);
@@ -109,10 +97,6 @@ public class ProductoService {
         return toDTO(actualizado);
     }
 
-
-    // ============================================================
-    // ACTUALIZAR SOLO PRECIO
-    // ============================================================
     public ProductoDTO actualizarPrecio(int idProducto, BigDecimal precioNuevo) {
 
         validaciones.validarIDProducto(idProducto);
@@ -127,10 +111,6 @@ public class ProductoService {
         return toDTO(productoRepository.save(producto));
     }
 
-
-    // ============================================================
-    // INVENTARIO
-    // ============================================================
     public ProductoDTO modificarInventario(int idProducto, int unidadesProducto) {
 
         validaciones.validarIDProducto(idProducto);
@@ -148,10 +128,6 @@ public class ProductoService {
         return toDTO(productoRepository.save(producto));
     }
 
-
-    // ============================================================
-    // DISPONIBILIDAD
-    // ============================================================
     public ProductoDTO cambiarDisponibilidad(int idProducto, boolean disponible) {
 
         validaciones.validarIDProducto(idProducto);
@@ -165,10 +141,6 @@ public class ProductoService {
         return toDTO(productoRepository.save(producto));
     }
 
-
-    // ============================================================
-    // ELIMINAR
-    // ============================================================
     public void eliminarProducto(int idProductoEliminar) {
 
         validaciones.validarIDProducto(idProductoEliminar);
@@ -180,10 +152,6 @@ public class ProductoService {
         productoRepository.deleteById(idProductoEliminar);
     }
 
-
-    // ============================================================
-    // CONSULTAR POR NOMBRE
-    // ============================================================
     @Transactional(readOnly = true)
     public ProductoDTO consultarProductoPorNombre(String nombre) {
 
@@ -196,10 +164,6 @@ public class ProductoService {
         return toDTO(productos.get(0));
     }
 
-
-    // ============================================================
-    // DTO CONVERTER
-    // ============================================================
     private ProductoDTO toDTO(Producto producto) {
         return new ProductoDTO(
                 producto.getId(),

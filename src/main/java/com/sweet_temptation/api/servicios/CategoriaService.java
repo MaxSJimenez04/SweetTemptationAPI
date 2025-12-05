@@ -18,21 +18,15 @@ public class CategoriaService {
 
     @Transactional(readOnly = true)
     public List<CategoriaDTO> consultarCategorias(){
-        // Aquí podrías añadir validaciones si fuera necesario.
         List<Categoria> categorias = categoriaRepository.findAll();
 
         if (categorias.isEmpty()) {
             throw new NoSuchElementException("No se encontraron categorías registradas.");
         }
-
-        // Mapea la lista de entidades a la lista de DTOs
         return categorias.stream().map(this::toDTO).toList();
     }
 
-    // Método para convertir la Entidad Categoria a CategoriaDTO
     private CategoriaDTO toDTO(Categoria categoria){
-        // *** IMPORTANTE: REEMPLAZA esto con la inicialización real de tu CategoriaDTO ***
-        // Asumiendo que tu CategoriaDTO tiene constructor o setters para Id y Nombre.
         return new CategoriaDTO(categoria.getId(), categoria.getNombre());
     }
 }
