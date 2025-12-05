@@ -76,17 +76,12 @@ public class ProductoController {
         }
     }
 
-    // La URL será: http://localhost:8080/producto/nombre/{nombre}
     @GetMapping("/nombre/{nombre}")
     public ResponseEntity<?> getProductoPorNombre(@PathVariable String nombre) {
         try {
-            // Llama al nuevo método del servicio.
-            // Si el producto existe, devuelve 200 OK (el cliente WPF interpreta esto como "existe").
             ProductoDTO producto = productoService.consultarProductoPorNombre(nombre);
             return ResponseEntity.status(HttpStatus.OK).body(producto);
         } catch (NoSuchElementException e) {
-            // Si el servicio no encuentra el producto, lanza NoSuchElementException.
-            // Devolvemos 404 NOT FOUND (el cliente WPF interpreta esto como "no existe").
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El producto con el nombre '" + nombre + "' no fue encontrado.");
         }
     }

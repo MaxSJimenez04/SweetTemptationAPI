@@ -6,6 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CategoriaRepository extends JpaRepository<Categoria, Integer> {
-    // Spring Data JPA ya proporciona findAll(), que es lo que necesitamos.
-    // Opcional: Si deseas un método de consulta específico, podrías agregarlo aquí.
 }

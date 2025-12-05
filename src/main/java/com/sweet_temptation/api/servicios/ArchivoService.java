@@ -54,38 +54,27 @@ public class ArchivoService {
         return archivoBD.getId();
     }
 
-    /**
-     * ASOCIACIÓN CORREGIDA (Lógica de Borrar y Reemplazar):
-     * Borra la asociación existente y crea una nueva, resolviendo el error de restricción UNIQUE.
-     */
-    @Transactional // <--- ¡Asegura que el DELETE y el INSERT son atómicos!
     public void asociarArchivo(int idArchivo, int idProducto){
         validaciones.validarIDArchivo(idArchivo);
         productoValidator.validarIDProducto(idProducto);
 
-        // 1. Obtener entidades
         Archivo archivoBD = repository.getReferenceById(idArchivo);
         Producto productoBD  = productoRepository.getReferenceById(idProducto);
         validaciones.validarArchivo(archivoBD);
         productoValidator.validarProducto(productoBD);
 
-        // 2. Buscar si ya existe la asociación
         ImagenProducto asociacionExistente = imagenProductoRepository.findByIdProducto(idProducto);
 
         if (asociacionExistente != null) {
-            // 🛑 Lógica de corrección: Borrar la asociación anterior para evitar
-            // la violación de restricción UNIQUE en la base de datos.
             imagenProductoRepository.delete(asociacionExistente);
         }
 
-        // 3. Crear el nuevo registro
         ImagenProducto nuevaAsociacion = new ImagenProducto();
         nuevaAsociacion.setIdProducto(idProducto);
         nuevaAsociacion.setIdArchivo(idArchivo);
         nuevaAsociacion.setFechaRegistro(archivoBD.getFechaRegistro());
         nuevaAsociacion.setFechaAsociacion(LocalDateTime.now());
 
-        // 4. Guardar la nueva asociación (siempre será un INSERT en esta lógica)
         imagenProductoRepository.save(nuevaAsociacion);
     }
 
@@ -93,7 +82,6 @@ public class ArchivoService {
         productoValidator.validarIDProducto(idProducto);
         ImagenProducto asociacionBD = imagenProductoRepository.findByIdProducto(idProducto);
 
-        // Si la asociación es null, lanza una excepción (se asume que debe existir)
         if (asociacionBD == null) {
             throw new NoSuchElementException("No existe asociación de archivo para el producto con ID: " + idProducto);
         }
@@ -103,9 +91,8 @@ public class ArchivoService {
 
         validaciones.validarArchivo(archivoBD);
 
-        // Ruta RELATIVA
         String ruta = "/archivo/" + archivoBD.getId();
-        System.out.println("RUTA ENVIADA: " + ruta);
+        System.out.println("Ruta enviada: " + ruta);
 
         return new DetallesArchivoDTO(
                 archivoBD.getId(),

@@ -20,7 +20,6 @@ public class ArchivoController {
     @Autowired
     private ArchivoService archivoService;
 
-    // GUARDAR ARCHIVO
     @PostMapping
     public ResponseEntity<?> guardarArchivo(@RequestBody ArchivoDTO archivoDTO) {
         try {
@@ -33,17 +32,12 @@ public class ArchivoController {
         }
     }
 
-    // ASOCIAR ARCHIVO
-    // ASOCIAR/ACTUALIZAR ARCHIVO
-    @PutMapping("/asociar/{idArchivo}/{idProducto}") // <-- CAMBIO CLAVE
+    @PutMapping("/asociar/{idArchivo}/{idProducto}")
     public ResponseEntity<?> asociarArchivo(
             @PathVariable int idArchivo,
             @PathVariable int idProducto) {
 
         try {
-            // En tu servicio, esta llamada DEBE borrar la asociación anterior si existe,
-            // y luego crear la nueva. O simplemente actualizar el ID del archivo asociado
-            // al producto dado.
             archivoService.asociarArchivo(idArchivo, idProducto);
             return ResponseEntity.status(HttpStatus.OK).build(); // Usar 200 OK para PUT exitoso
         } catch (IllegalArgumentException iae) {
@@ -53,7 +47,6 @@ public class ArchivoController {
         }
     }
 
-    // OBTENER DETALLES
     @GetMapping("/detalle")
     public ResponseEntity<?> obtenerDetallesArchivo(@RequestParam int idProducto) {
         try {
@@ -66,7 +59,6 @@ public class ArchivoController {
         }
     }
 
-    // OBTENER ARCHIVO POR ID
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerImagen(@PathVariable int id) {
         try {
