@@ -36,11 +36,11 @@ public class ProductoPedidoServiceTest {
     @Mock
     private PedidoRepository  pedidoRepository;
     @Mock
-    private ProductoPedidoValidator validaciones = new ProductoPedidoValidator();
+    private ProductoPedidoValidator validaciones;
     @Mock
-    private ProductoValidator productoValidator = new ProductoValidator();
+    private ProductoValidator productoValidator;
     @Mock
-    private PedidoValidator  pedidoValidator = new PedidoValidator();
+    private PedidoValidator pedidoValidator;
 
     private static final Producto producto1 = new Producto(1, "Brownie", "Brownie de chocolate",
             BigDecimal.valueOf(25.00), true, 52, LocalDateTime.now(), null, 6);
