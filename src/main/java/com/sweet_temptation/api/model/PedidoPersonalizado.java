@@ -36,6 +36,10 @@ public class PedidoPersonalizado {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime fechaSolicitud;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idProducto", nullable = true)
+    private Producto producto;
+
     public int getId() {
         return id;
     }

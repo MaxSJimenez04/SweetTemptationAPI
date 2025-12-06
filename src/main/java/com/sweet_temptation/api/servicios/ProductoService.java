@@ -3,9 +3,13 @@ package com.sweet_temptation.api.servicios;
 import com.sweet_temptation.api.dto.ProductoDTO;
 import com.sweet_temptation.api.model.Producto;
 import com.sweet_temptation.api.repository.ProductoRepository;
+import com.sweet_temptation.api.repository.ProductoPedidoRepository;
 import com.sweet_temptation.api.validaciones.ProductoValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -17,10 +21,21 @@ public class ProductoService {
 
     private final ProductoRepository productoRepository;
     private final ProductoValidator validaciones;
+    private final ArchivoService archivoService;
+    private final ProductoPedidoRepository productoPedidoRepository;
 
-    public ProductoService(ProductoRepository productoRepository, ProductoValidator validaciones) {
+    @PersistenceContext
+    private EntityManager entityManager;
+
+
+    public ProductoService(ProductoRepository productoRepository,
+                           ProductoValidator validaciones,
+                           ArchivoService archivoService,
+                           ProductoPedidoRepository productoPedidoRepository) {
         this.productoRepository = productoRepository;
         this.validaciones = validaciones;
+        this.archivoService = archivoService;
+        this.productoPedidoRepository = productoPedidoRepository;
     }
 
     @Transactional(readOnly = true)
@@ -141,6 +156,17 @@ public class ProductoService {
         return toDTO(productoRepository.save(producto));
     }
 
+    @Transactional
+    public void limpiarPedidosRelacionados(int idProducto) {
+        // Usamos SQL Nativo para eliminar referencias en ProductoPedido (tabla muchos-a-muchos)
+        // Esto es la solución más robusta contra errores de mapeo JPA/Hibernate al inicio.
+        entityManager.createNativeQuery(
+                        "DELETE FROM ProductoPedido WHERE idProducto = :idProducto")
+                .setParameter("idProducto", idProducto)
+                .executeUpdate();
+    }
+
+    @Transactional
     public void eliminarProducto(int idProductoEliminar) {
 
         validaciones.validarIDProducto(idProductoEliminar);
@@ -148,6 +174,10 @@ public class ProductoService {
         if (!productoRepository.existsById(idProductoEliminar)) {
             throw new NoSuchElementException("Producto no encontrado");
         }
+
+        archivoService.eliminarAsociacionYArchivoPorProducto(idProductoEliminar);
+
+        limpiarPedidosRelacionados(idProductoEliminar);
 
         productoRepository.deleteById(idProductoEliminar);
     }
@@ -178,4 +208,3 @@ public class ProductoService {
         );
     }
 }
-

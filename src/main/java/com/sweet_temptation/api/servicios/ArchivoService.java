@@ -13,7 +13,7 @@ import com.sweet_temptation.api.validaciones.ArchivoValidator;
 import com.sweet_temptation.api.validaciones.ImagenProductoValidator;
 import com.sweet_temptation.api.validaciones.ProductoValidator;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional; // Importación necesaria
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
@@ -54,6 +54,7 @@ public class ArchivoService {
         return archivoBD.getId();
     }
 
+    @Transactional
     public void asociarArchivo(int idArchivo, int idProducto){
         validaciones.validarIDArchivo(idArchivo);
         productoValidator.validarIDProducto(idProducto);
@@ -63,19 +64,20 @@ public class ArchivoService {
         validaciones.validarArchivo(archivoBD);
         productoValidator.validarProducto(productoBD);
 
-        ImagenProducto asociacionExistente = imagenProductoRepository.findByIdProducto(idProducto);
+        ImagenProducto asociacion = imagenProductoRepository.findByIdProducto(idProducto);
 
-        if (asociacionExistente != null) {
-            imagenProductoRepository.delete(asociacionExistente);
+        if (asociacion == null) {
+            asociacion = new ImagenProducto();
+            asociacion.setIdProducto(idProducto);
+            asociacion.setFechaRegistro(archivoBD.getFechaRegistro());
+        } else {
+            // Para la restricción UNIQUE.
         }
 
-        ImagenProducto nuevaAsociacion = new ImagenProducto();
-        nuevaAsociacion.setIdProducto(idProducto);
-        nuevaAsociacion.setIdArchivo(idArchivo);
-        nuevaAsociacion.setFechaRegistro(archivoBD.getFechaRegistro());
-        nuevaAsociacion.setFechaAsociacion(LocalDateTime.now());
+        asociacion.setIdArchivo(idArchivo);
+        asociacion.setFechaAsociacion(LocalDateTime.now());
 
-        imagenProductoRepository.save(nuevaAsociacion);
+        imagenProductoRepository.save(asociacion);
     }
 
     public DetallesArchivoDTO obtenerDatosArchivo(int idProducto){
@@ -107,5 +109,18 @@ public class ArchivoService {
         Archivo archivoBD = repository.getReferenceById(idArchivo);
         validaciones.validarArchivo(archivoBD);
         return new ArchivoDTO(archivoBD.getId(), archivoBD.getFechaRegistro(), archivoBD.getExtension(), archivoBD.getDatos());
+    }
+
+    @Transactional
+    public void eliminarAsociacionYArchivoPorProducto(int idProducto) {
+        ImagenProducto asociacion = imagenProductoRepository.findByIdProducto(idProducto);
+
+        if (asociacion != null) {
+            int idArchivo = asociacion.getIdArchivo();
+
+            imagenProductoRepository.delete(asociacion);
+
+            repository.deleteById(idArchivo);
+        }
     }
 }
