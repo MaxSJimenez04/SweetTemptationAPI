@@ -207,4 +207,8 @@ public class ProductoService {
                 producto.getCategoria()
         );
     }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 }
