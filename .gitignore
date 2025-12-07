@@ -31,3 +31,13 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Entornos y despliegue ###
+# No versionar variables de entorno locales
+.env
+
+# No versionar configuración específica de Docker local
+docker-compose.yml
+
+# No versionar propiedades de perfil docker
+src/main/resources/application-docker.properties
