@@ -191,10 +191,7 @@ public class ProductoServiceTest {
 
     @BeforeEach
     void setUp() {
-        // 🛑 QUITAR MockitoAnnotations.openMocks(this); 🛑
-        // Solo inyectamos el mock de EntityManager usando el setter que creamos.
-
-        // Inyectar el mock de EntityManager en el servicio a través del setter
+        
         productoService.setEntityManager(entityManager);
     }
 
