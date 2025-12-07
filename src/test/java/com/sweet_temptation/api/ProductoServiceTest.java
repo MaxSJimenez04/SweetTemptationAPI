@@ -3,13 +3,18 @@ package com.sweet_temptation.api;
 import com.sweet_temptation.api.dto.ProductoDTO;
 import com.sweet_temptation.api.model.Producto;
 import com.sweet_temptation.api.repository.ProductoRepository;
+import com.sweet_temptation.api.servicios.ArchivoService;
 import com.sweet_temptation.api.servicios.ProductoService;
 import com.sweet_temptation.api.validaciones.ProductoValidator;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.hibernate.sql.ast.tree.expression.CaseSimpleExpression;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -30,6 +35,16 @@ public class ProductoServiceTest {
 
     @InjectMocks
     private ProductoService productoService;
+
+    @Mock
+    private ArchivoService archivoService;
+
+    @Mock
+    private EntityManager entityManager;
+
+    // Mock de Query para simular la ejecución de la consulta DML nativa
+    @Mock
+    private Query mockQuery;
 
     // ----Para consultas de un Producto----
     @Test
@@ -174,34 +189,54 @@ public class ProductoServiceTest {
         verify(productoRepository, times(1)).findById(id);
     }
 
+    @BeforeEach
+    void setUp() {
+        // 🛑 QUITAR MockitoAnnotations.openMocks(this); 🛑
+        // Solo inyectamos el mock de EntityManager usando el setter que creamos.
+
+        // Inyectar el mock de EntityManager en el servicio a través del setter
+        productoService.setEntityManager(entityManager);
+    }
+
     @Test
     void eliminarProducto_Exito(){
         int id = 2;
 
+        // valida que el producto existe
         doNothing().when(validaciones).validarIDProducto(id);
-        when(productoRepository.existsById(id)).thenReturn(true);
 
-        // Act
+        // verifica el id
+        when(productoRepository.existsById(eq(id))).thenReturn(true);
+
+        // limpieza de entityManager
+        when(entityManager.createNativeQuery(anyString())).thenReturn(mockQuery);
+        when(mockQuery.setParameter(anyString(), eq(id))).thenReturn(mockQuery);
+        when(mockQuery.executeUpdate()).thenReturn(1);
+
+        // Simular la limpieza de archivos
+        doNothing().when(archivoService).eliminarAsociacionYArchivoPorProducto(id);
+
         productoService.eliminarProducto(id);
 
-        // Assert
         verify(validaciones, times(1)).validarIDProducto(id);
-        verify(productoRepository, times(1)).existsById(id);
+        verify(productoRepository, times(1)).existsById(id); // Verifica que fue llamado
+        verify(archivoService, times(1)).eliminarAsociacionYArchivoPorProducto(id);
         verify(productoRepository, times(1)).deleteById(id);
     }
 
     @Test
-    void eliminarProducto_NoExiste(){
-        int id = 2;
+    void eliminarProducto_IDInvalido_Falla(){
+        int id = 999;
 
         doNothing().when(validaciones).validarIDProducto(id);
         when(productoRepository.existsById(id)).thenReturn(false);
 
-        assertThrows(NoSuchElementException.class,
-                () -> productoService.eliminarProducto(id));
+        assertThrows(NoSuchElementException.class, () ->
+                productoService.eliminarProducto(id));
 
         verify(validaciones, times(1)).validarIDProducto(id);
         verify(productoRepository, times(1)).existsById(id);
+        verify(archivoService, never()).eliminarAsociacionYArchivoPorProducto(anyInt());
         verify(productoRepository, never()).deleteById(anyInt());
     }
 
