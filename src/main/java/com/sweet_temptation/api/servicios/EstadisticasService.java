@@ -4,9 +4,11 @@ import com.sweet_temptation.api.dto.EstadisticaProductoDTO;
 import com.sweet_temptation.api.dto.EstadisticaVentaProductoDTO;
 import com.sweet_temptation.api.dto.PedidoDTO;
 import com.sweet_temptation.api.model.Pedido;
+import com.sweet_temptation.api.repository.EstadisticasProductoRepository;
 import com.sweet_temptation.api.repository.EstadisticasRepository;
 import com.sweet_temptation.api.validaciones.EstadisticasValidator;
 import com.sweet_temptation.api.validaciones.PedidoValidator;
+import com.sweet_temptation.api.validaciones.ProductoValidator;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.ParameterMode;
 import jakarta.persistence.PersistenceContext;
@@ -27,13 +29,19 @@ import java.util.NoSuchElementException;
 public class EstadisticasService {
 
     private final EstadisticasRepository estadisticasRepository;
+    private final EstadisticasProductoRepository  estadisticasProductoRepository;
     private final EstadisticasValidator validaciones;
-    @PersistenceContext
-    private EntityManager em;
+    private final ProductoValidator productoValidator;
 
-    public EstadisticasService(EstadisticasRepository estadisticasRepository,EstadisticasValidator validaciones) {
+
+
+    public EstadisticasService(EstadisticasRepository estadisticasRepository,
+                               EstadisticasProductoRepository estadisticasProductoRepository,
+                               EstadisticasValidator validaciones, ProductoValidator  productoValidator) {
         this.estadisticasRepository = estadisticasRepository;
         this.validaciones = validaciones;
+        this.productoValidator = productoValidator;
+        this.estadisticasProductoRepository = estadisticasProductoRepository;
     }
 
     @Transactional(readOnly = true)
@@ -96,81 +104,25 @@ public class EstadisticasService {
 
     public List<EstadisticaProductoDTO> consultarProductosPopulares(LocalDate fechaInicio, LocalDate fechaFin) {
         validaciones.validarLocalDate(fechaInicio, fechaFin);
-        StoredProcedureQuery spq = em.createStoredProcedureQuery("dbo.sp_ProductosMasVendidos");
-        spq.registerStoredProcedureParameter("FechaInicio", Date.class, ParameterMode.IN);
-        spq.registerStoredProcedureParameter("FechaFin", Date.class, ParameterMode.IN);
-
-        spq.setParameter("FechaInicio",java.sql.Date.valueOf(fechaInicio));
-        spq.setParameter("FechaFin", java.sql.Date.valueOf(fechaFin));
-
-        spq.execute();
-
-        List<Object[]> rows = spq.getResultList();
-        if (rows == null || rows.isEmpty()) {
-            return null;
-        }
-
-        return rows.stream()
-                .map(r -> new EstadisticaProductoDTO(
-                        (String) r[0],
-                        (String) r[1],
-                        ((Number) r[2]).intValue()
-                ))
-                .toList();
+        List<EstadisticaProductoDTO> respuestaMejoresVentas = estadisticasProductoRepository.obtenerMejoresVentas(fechaInicio, fechaFin);
+        return respuestaMejoresVentas;
     }
 
     public List<EstadisticaProductoDTO> consultarProductosImpopulares(LocalDate fechaInicio, LocalDate fechaFin){
         validaciones.validarLocalDate(fechaInicio, fechaFin);
-        StoredProcedureQuery spq = em.createStoredProcedureQuery("dbo.sp_ProductosMenosVendidos");
-        spq.registerStoredProcedureParameter("FechaInicio", Date.class, ParameterMode.IN);
-        spq.registerStoredProcedureParameter("FechaFin", Date.class, ParameterMode.IN);
-
-        spq.setParameter("FechaInicio",java.sql.Date.valueOf(fechaInicio));
-        spq.setParameter("FechaFin", java.sql.Date.valueOf(fechaFin));
-
-        spq.execute();
-
-        List<Object[]> rows = spq.getResultList();
-
-        if (rows == null || rows.isEmpty()) {
-           return null;
-        }
-
-        return rows.stream()
-                .map(r -> new EstadisticaProductoDTO(
-                        (String) r[0],
-                        (String) r[1],
-                        ((Number) r[2]).intValue()
-                ))
-                .toList();
+        List<EstadisticaProductoDTO> respuestaPeoresVentas = estadisticasProductoRepository.obtenerPeoresVentas(fechaInicio, fechaFin);
+        return respuestaPeoresVentas;
     }
 
     public List<EstadisticaVentaProductoDTO> obtenerVentasPorDia(LocalDate fechaInicio, LocalDate fechaFin,
-                                                                 int idProducto){
+                                                                 int idProducto) {
         validaciones.validarLocalDate(fechaInicio, fechaFin);
-        StoredProcedureQuery spq = em.createStoredProcedureQuery("dbo.sp_VentaProducto");
-
-        spq.registerStoredProcedureParameter("FechaInicio", LocalDate.class, ParameterMode.IN);
-        spq.registerStoredProcedureParameter("FechaFin", LocalDate.class, ParameterMode.IN);
-        spq.registerStoredProcedureParameter("IdProducto", Integer.class, ParameterMode.IN);
-
-        spq.setParameter("FechaInicio", fechaInicio);
-        spq.setParameter("FechaFin", fechaFin);
-        spq.setParameter("IdProducto", idProducto);
-
-        spq.execute();
-
-        List<Object[]> rows = spq.getResultList();
-
-        if (rows.isEmpty()) {
-            throw new NoSuchElementException("No se encontraron estadisticas en el rango");
+        productoValidator.validarIDProducto(idProducto);
+        List<EstadisticaVentaProductoDTO> ventasPorDia = estadisticasProductoRepository.obtenerVentasPorDia(fechaInicio, fechaFin, idProducto);
+        if (ventasPorDia == null) {
+            throw new NoSuchElementException("No se encontraron estadisticas seleccionadas");
         }
-        return rows.stream()
-                .map(r -> new EstadisticaVentaProductoDTO(
-                        (Date) r[0],
-                        ((Number) r[1]).intValue()
-                ))
-                .toList();
+        return ventasPorDia;
     }
 }
 
