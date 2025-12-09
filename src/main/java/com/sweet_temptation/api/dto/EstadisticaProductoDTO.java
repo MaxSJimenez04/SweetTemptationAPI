@@ -1,16 +1,16 @@
 package com.sweet_temptation.api.dto;
 
 public class EstadisticaProductoDTO {
-    String nombre;
     String categoria;
+    String nombre;
     int ventas;
 
     public EstadisticaProductoDTO() {
     }
 
-    public EstadisticaProductoDTO(String nombre, String categoria, int ventas) {
-        this.nombre = nombre;
+    public EstadisticaProductoDTO(String categoria, String nombre, int ventas) {
         this.categoria = categoria;
+        this.nombre = nombre;
         this.ventas = ventas;
     }
 
