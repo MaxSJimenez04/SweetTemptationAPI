@@ -44,9 +44,14 @@ public class ProductoServiceTest {
     @Mock
     private EntityManager entityManager;
 
-    // Mock de Query para simular la ejecución de la consulta DML nativa
     @Mock
     private Query mockQuery;
+
+    @BeforeEach
+    void setUp() {
+        // MockitoAnnotations.openMocks(this); 
+        productoService.setEntityManager(entityManager);
+    }
 
     // ----Para consultas de un Producto----
     @Test
