@@ -5,9 +5,11 @@ import com.sweet_temptation.api.model.Producto;
 import com.sweet_temptation.api.servicios.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -52,15 +54,23 @@ public class ProductoController {
         }
     }
 
-    @PutMapping(path = "/{id}")
-    public ResponseEntity<?> actualizarProducto(@PathVariable int id, @RequestBody ProductoDTO producto){
-        try{
-            ProductoDTO actualizado = productoService.actualizarProducto(id, producto);
+    @PutMapping(path = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> actualizarProducto(
+            @PathVariable int id,
+            @RequestPart("producto") ProductoDTO producto, // Recibe los datos JSON/form-data
+            @RequestPart(value = "imagen", required = false) MultipartFile imagenNueva) { // Recibe el archivo de imagen (opcional)
+        try {
+            // Llamamos al servicio con los datos y el archivo
+            ProductoDTO actualizado = productoService.actualizarProducto(id, producto, imagenNueva);
             return ResponseEntity.status(HttpStatus.OK).body(actualizado);
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }catch (NoSuchElementException e){
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error de argumento: " + e.getMessage());
+        } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (RuntimeException e) {
+            // Captura errores generales como problemas de lectura del archivo o de DB
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno al actualizar el producto o la imagen: " + e.getMessage());
         }
     }
 

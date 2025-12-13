@@ -16,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -156,43 +158,59 @@ public class ProductoServiceTest {
         verify(validaciones, times(1)).validarProductoNuevo(nuevo);
         verifyNoMoreInteractions(productoRepository);
     }
-
     @Test
-    void actualizarProducto_Exito(){
+    void actualizarProducto_Exito_ConImagen() {
         int id = 5;
         Producto producto = productoEjemplo1(id);
         ProductoDTO cambios = new ProductoDTO(id, "Brownie Premium", "Con nuez",
                 BigDecimal.valueOf(55), true, 25, producto.getFechaRegistro(), LocalDateTime.now(), 2);
 
-        doNothing().when(validaciones).validarIDProducto(id);
-        when(productoRepository.findById(id)).thenReturn(Optional.of(producto));
-        when(productoRepository.save(any(Producto.class))).thenReturn(producto); // devolver lo modificado
+        // Para simular el archivo de la imagen
+        MockMultipartFile imagenMock = new MockMultipartFile(
+                "imagen", // Nombre del campo
+                "tarta.png", // Nombre del archivo
+                "image/png", // Tipo de contenido
+                "datos_mock".getBytes()
+        );
 
-        ProductoDTO dto = productoService.actualizarProducto(id, cambios);
+        doNothing().when(validaciones).validarIDProducto(id);
+
+        doNothing().when(validaciones).validarProductoModificado(cambios);
+
+        when(productoRepository.findById(id)).thenReturn(Optional.of(producto));
+        when(productoRepository.save(any(Producto.class))).thenReturn(producto);
+
+        doNothing().when(archivoService).reemplazarImagenProducto(eq(id), any(byte[].class), anyString());
+
+        ProductoDTO dto = productoService.actualizarProducto(id, cambios, imagenMock);
 
         assertEquals("Brownie Premium", dto.getNombre());
         assertEquals(25, dto.getUnidades());
+
         verify(validaciones, times(1)).validarIDProducto(id);
         verify(productoRepository, times(1)).findById(id);
         verify(productoRepository, times(1)).save(any(Producto.class));
+
+        verify(archivoService, times(1)).reemplazarImagenProducto(eq(id), any(byte[].class), anyString());
     }
+
 
     @Test
     void actualizarProducto_NoExiste(){
         int id = 123;
         ProductoDTO cambios = new ProductoDTO(id, "X", "Y", BigDecimal.TEN, true, 1,
                 LocalDateTime.now(), LocalDateTime.now(), 2);
+
+        MultipartFile imagenNull = null;
+
         doNothing().when(validaciones).validarIDProducto(id);
         when(productoRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(NoSuchElementException.class, () -> productoService.actualizarProducto(id, cambios));
+        assertThrows(NoSuchElementException.class, () -> productoService.actualizarProducto(id, cambios, imagenNull));
+
         verify(productoRepository, times(1)).findById(id);
-    }
 
-    @BeforeEach
-    void setUp() {
-
-        productoService.setEntityManager(entityManager);
+        verifyNoInteractions(archivoService);
     }
 
     @Test
