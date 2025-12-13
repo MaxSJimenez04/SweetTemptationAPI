@@ -13,6 +13,9 @@ public class PedidoDTO {
     Boolean personalizado;
     int idCliente;
 
+    // nombre del cliente
+    String nombreCliente;
+
     public PedidoDTO(int id, LocalDateTime fechaCompra, Boolean actual, BigDecimal total, int estado, Boolean personalizado, int idCliente) {
         this.id = id;
         this.fechaCompra = fechaCompra;
@@ -21,6 +24,7 @@ public class PedidoDTO {
         this.estado = estado;
         this.personalizado = personalizado;
         this.idCliente = idCliente;
+        //this.nombreCliente = nombreCliente;
     }
 
     public int getId() {
@@ -78,4 +82,5 @@ public class PedidoDTO {
     public void setIdCliente(int idCliente) {
         this.idCliente = idCliente;
     }
+
 }

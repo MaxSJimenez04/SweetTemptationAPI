@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -91,13 +92,30 @@ public class ProductoService {
         return guardado.getId();
     }
 
-    public ProductoDTO actualizarProducto(int idProducto, ProductoDTO producto) {
+    @Transactional
+    public ProductoDTO actualizarProducto(int idProducto, ProductoDTO producto, MultipartFile imagenNueva) {
 
         validaciones.validarIDProducto(idProducto);
         validaciones.validarProductoModificado(producto);
 
         Producto actual = productoRepository.findById(idProducto)
                 .orElseThrow(() -> new NoSuchElementException("Producto no encontrado: " + idProducto));
+
+        if (imagenNueva != null && !imagenNueva.isEmpty()) {
+            try {
+                byte[] datos = imagenNueva.getBytes();
+
+                String nombreOriginal = imagenNueva.getOriginalFilename();
+                String extension = "";
+                if (nombreOriginal != null && nombreOriginal.lastIndexOf('.') != -1) {
+                    extension = nombreOriginal.substring(nombreOriginal.lastIndexOf('.') + 1);
+                }
+                archivoService.reemplazarImagenProducto(idProducto, datos, extension);
+
+            } catch (Exception e) {
+                throw new RuntimeException("Error al procesar la nueva imagen del producto: " + e.getMessage(), e);
+            }
+        }
 
         actual.setNombre(producto.getNombre());
         actual.setDescripcion(producto.getDescripcion());

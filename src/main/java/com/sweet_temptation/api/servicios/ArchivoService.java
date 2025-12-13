@@ -123,4 +123,33 @@ public class ArchivoService {
             repository.deleteById(idArchivo);
         }
     }
+
+    // Para modificar la imagen del producto
+    @Transactional
+    public void reemplazarImagenProducto(int idProducto, byte[] datosImagen, String extension) {
+
+        eliminarAsociacionYArchivoPorProducto(idProducto);
+
+        Archivo archivoNuevo = new Archivo();
+        archivoNuevo.setDatos(datosImagen);
+        archivoNuevo.setExtension(extension.toLowerCase().substring(0, Math.min(extension.length(), 10)));
+        archivoNuevo.setFechaRegistro(LocalDateTime.now());
+
+        Archivo archivoGuardado = repository.save(archivoNuevo);
+        validaciones.validarArchivo(archivoGuardado);
+
+        int idNuevoArchivo = archivoGuardado.getId();
+
+        Producto productoBD = productoRepository.getReferenceById(idProducto);
+
+        ImagenProducto nuevaAsociacion = new ImagenProducto();
+
+        nuevaAsociacion.setIdProducto(idProducto);
+        nuevaAsociacion.setIdArchivo(idNuevoArchivo);
+        nuevaAsociacion.setFechaRegistro(archivoGuardado.getFechaRegistro()); // Usar la fecha del Archivo
+        nuevaAsociacion.setFechaAsociacion(LocalDateTime.now());
+
+        imagenProductoRepository.save(nuevaAsociacion);
+        asociacionValidator.validarAsociacion(nuevaAsociacion); // Validar la asociación
+    }
 }

@@ -125,6 +125,62 @@ public class PedidoService {
         validaciones.validarPedido(pedidoBD);
         pedidoRepository.delete(pedidoBD);
     }
+
+
+    // Para ventas
+    // TODO - Checar los estados
+    private int mapearEstadoTextoAID(String estadoFiltro) {
+        switch (estadoFiltro) {
+            case "Completada":
+                return 3;
+            case "Cancelada":
+                return 4;
+            case "Pendiente": // El estado inicial al crear un pedido de cliente es 2
+                return 2;
+            default:
+                return 0; // Valor que indica un estado no reconocido
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<PedidoDTO> consultarPedidosConFiltros(LocalDate fechaInicio, LocalDate fechaFin, String estadoFiltro) {
+        LocalDateTime inicio = fechaInicio.atStartOfDay();
+        LocalDateTime fin = fechaFin.atTime(LocalTime.MAX);
+
+        List<Pedido> pedidosBD;
+
+        if (estadoFiltro.equalsIgnoreCase("Todas")) {
+            pedidosBD = pedidoRepository.findByFechaCompraBetween(inicio, fin);
+
+        } else {
+            int estadoID = mapearEstadoTextoAID(estadoFiltro);
+
+            if (estadoID == 0) {
+                return Collections.emptyList();
+            }
+
+            pedidosBD = pedidoRepository.findByFechaCompraBetweenAndEstado(inicio, fin, estadoID);
+        }
+
+        if (pedidosBD == null || pedidosBD.isEmpty()){
+            return Collections.emptyList();
+        }
+
+        List<PedidoDTO> pedidosDTO = new ArrayList<>();
+        for (Pedido pedido : pedidosBD) {
+            PedidoDTO dto = new PedidoDTO(
+                    pedido.getId(),
+                    pedido.getFechaCompra(),
+                    pedido.getActual(),
+                    pedido.getTotal(),
+                    pedido.getEstado(),
+                    pedido.getPersonalizado(),
+                    pedido.getIdCliente()
+            );
+            pedidosDTO.add(dto);
+        }
+        return pedidosDTO;
+    }
 }
 
 

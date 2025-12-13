@@ -173,4 +173,31 @@ public class PedidoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(re.getMessage());
         }
     }
+
+    @GetMapping(path = "/consultar")
+    public ResponseEntity<?> consultarPedidos(
+            @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+            @RequestParam("estado") String estado) {
+
+        try {
+            // Llama al nuevo método del servicio que implementamos antes
+            List<PedidoDTO> pedidos = pedidoService.consultarPedidosConFiltros(fechaInicio, fechaFin, estado);
+
+            if (pedidos.isEmpty()) {
+                // Si no hay contenido, devuelve 204 No Content
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            }
+
+            // Si hay contenido, devuelve 200 OK con la lista de pedidos
+            return ResponseEntity.status(HttpStatus.OK).body(pedidos);
+
+        } catch (IllegalArgumentException iae) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
+        } catch (RuntimeException rte) {
+            // Capturar errores generales (ej. de la DB)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(rte.getMessage());
+        }
+    }
+
 }
