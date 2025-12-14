@@ -71,7 +71,7 @@ public class ProductoPedidoService {
             throw new IllegalArgumentException("Cantidad mayor a la disponible");
         }
         productoBD.setCantidad(cantidad);
-        productoBD.setSubtotal(calcularSubtotal(productoBD.getPrecioVenta(), cantidad));
+        productoBD.setSubtotal(calcularSubtotal(productoOriginal.getPrecio(), cantidad));
         ProductoPedido respuesta = repository.save(productoBD);
         validaciones.validarProductoPedido(respuesta);
         return new ProductoPedidoDTO(respuesta.getId(), respuesta.getSubtotal(), respuesta.getCantidad(),
