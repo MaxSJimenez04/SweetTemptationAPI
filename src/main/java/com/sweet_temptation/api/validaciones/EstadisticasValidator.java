@@ -37,6 +37,10 @@ public class EstadisticasValidator {
 
         String normalizado = estado.trim().toLowerCase();
 
+        if (normalizado.isEmpty()) {
+            return 0;
+        }
+
         switch (normalizado) {
             case "completada":
             case "completado":
@@ -44,6 +48,8 @@ public class EstadisticasValidator {
             case "cancelada":
             case "cancelado":
                 return 4;
+            case "pendiente":
+                return 2;
             default:
                 throw new IllegalArgumentException("Estado de venta inválido: " + estado);
         }

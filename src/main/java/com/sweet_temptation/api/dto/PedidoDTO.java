@@ -13,9 +13,11 @@ public class PedidoDTO {
     Boolean personalizado;
     int idCliente;
 
-    // nombre del cliente
-    String nombreCliente;
+    // para rol
+    String nombreRol;
+    int idRol;
 
+    // Constructor principal
     public PedidoDTO(int id, LocalDateTime fechaCompra, Boolean actual, BigDecimal total, int estado, Boolean personalizado, int idCliente) {
         this.id = id;
         this.fechaCompra = fechaCompra;
@@ -24,7 +26,12 @@ public class PedidoDTO {
         this.estado = estado;
         this.personalizado = personalizado;
         this.idCliente = idCliente;
-        //this.nombreCliente = nombreCliente;
+    }
+
+    // Constructor para la consulta de ventas
+    public PedidoDTO(int id, LocalDateTime fechaCompra, Boolean actual, BigDecimal total,int estado, Boolean personalizado, int idCliente, int idRol) {
+        this(id, fechaCompra, actual, total, estado, personalizado, idCliente);
+        this.idRol = idRol;
     }
 
     public int getId() {
@@ -81,6 +88,14 @@ public class PedidoDTO {
 
     public void setIdCliente(int idCliente) {
         this.idCliente = idCliente;
+    }
+
+    public int getIdRol() {
+        return idRol;
+    }
+
+    public void setIdRol(int idRol) {
+        this.idRol = idRol;
     }
 
 }

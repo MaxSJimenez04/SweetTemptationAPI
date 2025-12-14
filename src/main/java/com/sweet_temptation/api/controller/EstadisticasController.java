@@ -4,6 +4,7 @@ import com.sweet_temptation.api.dto.EstadisticaProductoDTO;
 import com.sweet_temptation.api.dto.EstadisticaVentaProductoDTO;
 import com.sweet_temptation.api.dto.PedidoDTO;
 import com.sweet_temptation.api.servicios.EstadisticasService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -11,8 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -24,7 +27,7 @@ public class EstadisticasController {
     private EstadisticasService estadisticasService;
 
 
-    // ========== Estadisticas de ventas ==========
+    // ========== Estadisticas/reporte de ventas ==========
 
     @GetMapping("/ventas")
     public ResponseEntity<?> consultarVentas(
@@ -47,6 +50,63 @@ public class EstadisticasController {
         }catch (NoSuchElementException ex){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
+    }
+
+    @GetMapping("/ventas/descargarCSV")
+    public void descargarReporteCSV(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+            @RequestParam String estado,
+            HttpServletResponse response) {
+
+        String nombreArchivo = "reporte_ventas_" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + ".csv";
+
+        response.setContentType("text/csv; charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + nombreArchivo + "\"");
+        response.setCharacterEncoding("UTF-8");
+
+        try (PrintWriter writer = response.getWriter()) {
+
+            List<PedidoDTO> pedidosFiltrados = estadisticasService.consultarVentasPorRangoYEstado(fechaInicio, fechaFin, estado);
+
+            writer.println("ID Rol,Tipo de Pedido,Fecha de Compra,Estado,Total (MXN)"); // Cambiamos Usuario por ID Rol
+
+            for (PedidoDTO pedido : pedidosFiltrados) {
+
+                String tipoUsuario = mapearRol(pedido.getIdRol());
+
+                String tipoPedido = pedido.getPersonalizado() ? "Personalizado" : "Estandar";
+
+                String estadoTexto = mapearEstado(pedido.getEstado());
+                String fechaFormateada = pedido.getFechaCompra().toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                String totalFormateado = String.format("%.2f", pedido.getTotal().doubleValue());
+
+                String fila = String.join(",",
+                        tipoUsuario,
+                        tipoPedido,
+                        fechaFormateada,
+                        estadoTexto,
+                        totalFormateado);
+
+                writer.println(fila);
+            }
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+    }
+
+    private String mapearEstado(int codigoEstado) {
+        if (codigoEstado == 3) return "Completada";
+        if (codigoEstado == 4) return "Cancelada";
+        if (codigoEstado == 2) return "Pendiente";
+        return "Desconocido";
+    }
+
+    private String mapearRol(int idRol) {
+        if (idRol == 1) return "Administrador";
+        if (idRol == 2) return "Empleado";
+        if (idRol == 3) return "Cliente";
+        return "Error"; // Para manejar el caso 0 o cualquier otro valor inesperado.
     }
 
     // ========== Estadisticas Productos ==========
