@@ -94,7 +94,6 @@ public class ArchivoService {
         validaciones.validarArchivo(archivoBD);
 
         String ruta = "/archivo/" + archivoBD.getId();
-        System.out.println("Ruta enviada: " + ruta);
 
         return new DetallesArchivoDTO(
                 archivoBD.getId(),
