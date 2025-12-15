@@ -66,7 +66,7 @@ public class EstadisticasService {
             throw new NoSuchElementException("No se encontraron ventas en el rango y estado indicados");
         }
         //Para verificar desde consola
-        System.out.println("--- INICIANDO MAPEO DE PEDIDOS ---");
+        System.out.println("--- Mostrando Pedidos ---");
 
         return pedidos.stream()
                 .map(p -> {
@@ -85,7 +85,7 @@ public class EstadisticasService {
                         }
                     }
 
-                    System.out.println("Pedido ID: " + p.getId() + " | ID ROL FINAL ENVIADO: " + idRolObtenido);
+                    System.out.println("Pedido ID: " + p.getId() + " | ID ROL: " + idRolObtenido);
 
                     return new PedidoDTO(
                             p.getId(),
