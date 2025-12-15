@@ -410,7 +410,8 @@ public class ProductoPedidoServiceTest {
         //Arrange
         when(repository.getReferenceById(productoPedido.getIdProducto())).thenReturn(productoPedido);
         when(repository.getReferenceById(productoPedido2.getIdProducto())).thenReturn(productoPedido2);
-
+        when(productoRepository.getReferenceById(productoPedido.getIdProducto())).thenReturn(producto1);
+        when(productoRepository.getReferenceById(productoPedido2.getIdProducto())).thenReturn(producto2);
         //Act
         servicio.comprarProductos(detallesList);
 
