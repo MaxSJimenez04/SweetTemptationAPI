@@ -181,6 +181,34 @@ public class PedidoService {
         }
         return pedidosDTO;
     }
+// Modifica este método en tu PedidoService.java
+
+    public PedidoDTO crearPedidoCliente_noExiste(int idCliente){
+        validaciones.validarIDCliente(idCliente); // Tu validación existente
+
+        Pedido pedidoNuevo = new Pedido();
+        pedidoNuevo.setIdCliente(idCliente);
+        pedidoNuevo.setPersonalizado(false);
+        pedidoNuevo.setActual(true);
+        pedidoNuevo.setEstado(2); // Estado 'Pendiente' o 'En curso' para clientes
+        pedidoNuevo.setTotal(BigDecimal.ZERO);
+        pedidoNuevo.setFechaCompra(LocalDateTime.now());
+
+        // 1. Guardamos y capturamos el objeto guardado (que ya trae el ID generado)
+        Pedido pedidoGuardado = pedidoRepository.save(pedidoNuevo);
+
+        // 2. Devolvemos el DTO con el ID generado
+        return new PedidoDTO(
+                pedidoGuardado.getId(),
+                pedidoGuardado.getFechaCompra(),
+                pedidoGuardado.getActual(),
+                pedidoGuardado.getTotal(),
+                pedidoGuardado.getEstado(),
+                pedidoGuardado.getPersonalizado(),
+                pedidoGuardado.getIdCliente()
+        );
+    }
+
 }
 
 

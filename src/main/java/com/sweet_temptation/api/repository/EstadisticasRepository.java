@@ -21,4 +21,12 @@ public interface EstadisticasRepository extends JpaRepository<Pedido, Integer> {
             @Param("inicio") LocalDateTime fechaInicio,
             @Param("fin") LocalDateTime fechaFin
     );
+
+    // Filtrar sin estado
+    @Query("SELECT p FROM Pedido p " +
+            "WHERE p.fechaCompra BETWEEN :inicio AND :fin")
+    List<Pedido> findByFechaCompraBetween(
+            @Param("inicio") LocalDateTime fechaInicio,
+            @Param("fin") LocalDateTime fechaFin
+    );
 }

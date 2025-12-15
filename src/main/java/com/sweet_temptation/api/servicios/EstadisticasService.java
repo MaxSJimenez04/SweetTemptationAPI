@@ -4,8 +4,10 @@ import com.sweet_temptation.api.dto.EstadisticaProductoDTO;
 import com.sweet_temptation.api.dto.EstadisticaVentaProductoDTO;
 import com.sweet_temptation.api.dto.PedidoDTO;
 import com.sweet_temptation.api.model.Pedido;
+import com.sweet_temptation.api.model.Usuario;
 import com.sweet_temptation.api.repository.EstadisticasProductoRepository;
 import com.sweet_temptation.api.repository.EstadisticasRepository;
+import com.sweet_temptation.api.repository.UsuarioRepository;
 import com.sweet_temptation.api.validaciones.EstadisticasValidator;
 import com.sweet_temptation.api.validaciones.PedidoValidator;
 import com.sweet_temptation.api.validaciones.ProductoValidator;
@@ -24,6 +26,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class EstadisticasService {
@@ -32,50 +35,69 @@ public class EstadisticasService {
     private final EstadisticasProductoRepository  estadisticasProductoRepository;
     private final EstadisticasValidator validaciones;
     private final ProductoValidator productoValidator;
+    private final UsuarioRepository usuarioRepository;
 
-
-
-    public EstadisticasService(EstadisticasRepository estadisticasRepository,
-                               EstadisticasProductoRepository estadisticasProductoRepository,
-                               EstadisticasValidator validaciones, ProductoValidator  productoValidator) {
+    public EstadisticasService(EstadisticasRepository estadisticasRepository, EstadisticasProductoRepository estadisticasProductoRepository, EstadisticasValidator validaciones, ProductoValidator  productoValidator, UsuarioRepository usuarioRepository) {
         this.estadisticasRepository = estadisticasRepository;
         this.validaciones = validaciones;
         this.productoValidator = productoValidator;
         this.estadisticasProductoRepository = estadisticasProductoRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @Transactional(readOnly = true)
-    public List<PedidoDTO> consultarVentasPorRangoYEstado(
-            LocalDate fechaInicio,
-            LocalDate fechaFin,
-            String estadoTexto
-    ) {
-
+    public List<PedidoDTO> consultarVentasPorRangoYEstado(LocalDate fechaInicio, LocalDate fechaFin, String estadoTexto) {
         LocalDateTime inicioDateTime = fechaInicio.atStartOfDay();
         LocalDateTime finDateTime = fechaFin.atTime(LocalTime.MAX);
 
-        // Validaciones
         validaciones.validarRangoFecha(inicioDateTime, finDateTime);
         int estado = validaciones.validarEstadoVenta(estadoTexto);
 
-        // Consulta en la BD
-        List<Pedido> pedidos = estadisticasRepository
-                .findByEstadoAndFechaCompra(estado,inicioDateTime, finDateTime);
+        List<Pedido> pedidos;
+
+        if (estado == 0) {
+            pedidos = estadisticasRepository.findByFechaCompraBetween(inicioDateTime, finDateTime);
+        } else {
+            pedidos = estadisticasRepository
+                    .findByEstadoAndFechaCompra(estado, inicioDateTime, finDateTime);
+        }
 
         if (pedidos == null || pedidos.isEmpty()) {
             throw new NoSuchElementException("No se encontraron ventas en el rango y estado indicados");
         }
+        //Para verificar desde consola
+        System.out.println("--- Mostrando Pedidos ---");
 
         return pedidos.stream()
-                .map(p -> new PedidoDTO(
-                        p.getId(),
-                        p.getFechaCompra(),
-                        p.getActual(),
-                        p.getTotal(),
-                        p.getEstado(),
-                        p.getPersonalizado(),
-                        p.getIdCliente()
-                )).toList();
+                .map(p -> {
+                    int idRolObtenido = 2;
+                    int idClientePedido = p.getIdCliente();
+
+                    if (idClientePedido > 0) {
+                        Optional<Integer> idRolOpt = usuarioRepository.findIdRolByIdUsuario(idClientePedido);
+
+                        System.out.println("Pedido ID: " + p.getId() + " | idCliente: " + idClientePedido + " | JPQL isPresent: " + idRolOpt.isPresent());
+
+                        if (idRolOpt.isPresent()) {
+                            idRolObtenido = idRolOpt.get();
+                        } else {
+                            idRolObtenido = 3;
+                        }
+                    }
+
+                    System.out.println("Pedido ID: " + p.getId() + " | ID ROL: " + idRolObtenido);
+
+                    return new PedidoDTO(
+                            p.getId(),
+                            p.getFechaCompra(),
+                            p.getActual(),
+                            p.getTotal(),
+                            p.getEstado(),
+                            p.getPersonalizado(),
+                            idClientePedido,
+                            idRolObtenido
+                    );
+                }).toList();
     }
 
     // MÉTODOS PARA ESTADÍSTICAS DE PRODUCTOS
