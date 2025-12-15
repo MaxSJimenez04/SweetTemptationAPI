@@ -13,11 +13,9 @@ public class PedidoDTO {
     Boolean personalizado;
     int idCliente;
 
-    // para rol
     String nombreRol;
     int idRol;
 
-    // Constructor principal
     public PedidoDTO(int id, LocalDateTime fechaCompra, Boolean actual, BigDecimal total, int estado, Boolean personalizado, int idCliente) {
         this.id = id;
         this.fechaCompra = fechaCompra;

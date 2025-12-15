@@ -39,9 +39,6 @@ public class Usuario {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime fechaModificacion;
 
-    //@Column(nullable = false)
-    //private int idRol;
-
     @Column(name = "idRol", nullable = false) // Aseguramos el nombre de la columna en la DB
     private int idRol;
 

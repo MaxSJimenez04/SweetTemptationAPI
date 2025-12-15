@@ -199,19 +199,4 @@ public class PedidoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(rte.getMessage());
         }
     }
-
-    @PostMapping(path = "/crear/cliente/auto/{idCliente}")
-    public ResponseEntity<?> crearPedidoClienteAutomatico(@PathVariable int idCliente) {
-        try {
-            // Llamamos al método nuevo que sí devuelve el PedidoDTO
-            PedidoDTO nuevoPedido = pedidoService.crearPedidoCliente_noExiste(idCliente);
-
-            // Retornamos el objeto completo (con el ID) y estado 200 OK
-            return ResponseEntity.status(HttpStatus.OK).body(nuevoPedido);
-        } catch (IllegalArgumentException iae) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear el pedido: " + e.getMessage());
-        }
-    }
 }
