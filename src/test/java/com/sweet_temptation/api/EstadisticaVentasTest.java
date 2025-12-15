@@ -45,6 +45,8 @@ public class EstadisticaVentasTest {
     private UsuarioRepository usuarioRepository; // para el rol
 
 
+    //====== PRUEBAS UNITARIAS ======
+
     // Prueba: consultar todas las ventas
     @Test
     void consultarVentas_Exito() {
