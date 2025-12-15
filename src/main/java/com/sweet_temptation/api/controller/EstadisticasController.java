@@ -141,6 +141,8 @@ public class EstadisticasController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (NoSuchElementException se) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(se.getMessage());
+        } catch (RuntimeException re) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(re.getMessage());
         }
     }
 }

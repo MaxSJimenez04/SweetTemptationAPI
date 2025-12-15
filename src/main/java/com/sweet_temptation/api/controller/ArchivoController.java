@@ -3,12 +3,9 @@ package com.sweet_temptation.api.controller;
 import com.sweet_temptation.api.dto.ArchivoDTO;
 import com.sweet_temptation.api.dto.DetallesArchivoDTO;
 import com.sweet_temptation.api.servicios.ArchivoService;
-import com.sweet_temptation.api.servicios.UsuarioService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
@@ -29,6 +26,8 @@ public class ArchivoController {
             return ResponseEntity.badRequest().body(iae.getMessage());
         } catch (NoSuchElementException nsee) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
+        } catch (RuntimeException rte) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(rte.getMessage());
         }
     }
 
@@ -44,6 +43,8 @@ public class ArchivoController {
             return ResponseEntity.badRequest().body(iae.getMessage());
         } catch (NoSuchElementException nsee) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
+        } catch (RuntimeException re) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(re.getMessage());
         }
     }
 
@@ -51,11 +52,13 @@ public class ArchivoController {
     public ResponseEntity<?> obtenerDetallesArchivo(@RequestParam int idProducto) {
         try {
             DetallesArchivoDTO detalles = archivoService.obtenerDatosArchivo(idProducto);
-            return ResponseEntity.ok(detalles);
+            return ResponseEntity.status(HttpStatus.OK).body(detalles);
         } catch (IllegalArgumentException iae) {
-            return ResponseEntity.badRequest().body(iae.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
         } catch (NoSuchElementException nsee) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
+        }  catch (RuntimeException re) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(re.getMessage());
         }
     }
 
@@ -68,6 +71,8 @@ public class ArchivoController {
             return ResponseEntity.badRequest().body(iae.getMessage());
         } catch (NoSuchElementException nsee) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
+        }  catch (RuntimeException re) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(re.getMessage());
         }
     }
 }

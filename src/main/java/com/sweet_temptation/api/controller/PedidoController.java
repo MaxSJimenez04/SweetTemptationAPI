@@ -3,7 +3,6 @@ package com.sweet_temptation.api.controller;
 import com.sweet_temptation.api.dto.DetallesProductoDTO;
 import com.sweet_temptation.api.dto.PedidoDTO;
 import com.sweet_temptation.api.dto.ProductoPedidoDTO;
-import com.sweet_temptation.api.model.Pedido;
 import com.sweet_temptation.api.servicios.PedidoService;
 import com.sweet_temptation.api.servicios.ProductoPedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +34,8 @@ public class PedidoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
         }catch(NoSuchElementException nsee){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
+        } catch (RuntimeException rte) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(rte.getMessage());
         }
     }
 
@@ -47,6 +48,8 @@ public class PedidoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (NoSuchElementException nsee){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
+        } catch (RuntimeException rte) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(rte.getMessage());
         }
     }
 
@@ -55,8 +58,12 @@ public class PedidoController {
         try{
             PedidoDTO pedido = pedidoService.crearPedidoEmpleado(idEmpleado);
             return ResponseEntity.status(HttpStatus.CREATED).body(pedido);
-        }catch (IllegalArgumentException iae){
+        } catch (IllegalArgumentException iae){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
+        } catch (NoSuchElementException nsee){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
+        } catch (RuntimeException rte) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(rte.getMessage());
         }
     }
 
@@ -67,6 +74,8 @@ public class PedidoController {
             return ResponseEntity.status(HttpStatus.CREATED).body(null);
         }catch (IllegalArgumentException iae){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
+        } catch (RuntimeException rte) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(rte.getMessage());
         }
     }
 
@@ -79,6 +88,8 @@ public class PedidoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (NoSuchElementException nsee){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
+        } catch (RuntimeException rte) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(rte.getMessage());
         }
     }
 
@@ -91,6 +102,8 @@ public class PedidoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (NoSuchElementException nsee){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
+        } catch (RuntimeException re) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(re.getMessage());
         }
     }
 
@@ -122,8 +135,8 @@ public class PedidoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
         }catch (ArrayIndexOutOfBoundsException aoie) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(aoie.getMessage());
-        }catch(RuntimeException rte ){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(rte.getMessage());
+        }catch(RuntimeException re){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(re.getMessage());
         }
     }
 
@@ -137,6 +150,8 @@ public class PedidoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
         }catch(NoSuchElementException nsee){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
+        } catch (RuntimeException re){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(re.getMessage());
         }
     }
 
@@ -147,8 +162,8 @@ public class PedidoController {
             return ResponseEntity.status(HttpStatus.OK).body(null);
         }catch(IllegalArgumentException iae){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        } catch (RuntimeException re) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(re.getMessage());
         }
     }
 
@@ -157,8 +172,12 @@ public class PedidoController {
         try{
             List<DetallesProductoDTO> respuesta = productoPedidoService.obtenerListaProductos(idPedido);
             return ResponseEntity.status(HttpStatus.OK).body(respuesta);
-        }catch(IllegalArgumentException iae){
+        }  catch(IllegalArgumentException iae){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
+        }  catch (NoSuchElementException nsee){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
+        }  catch (RuntimeException re){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(re.getMessage());
         }
     }
 
