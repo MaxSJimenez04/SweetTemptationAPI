@@ -12,6 +12,7 @@ import com.sweet_temptation.api.validaciones.PedidoValidator;
 import com.sweet_temptation.api.validaciones.ProductoPedidoValidator;
 import com.sweet_temptation.api.validaciones.ProductoValidator;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class ProductoPedidoService {
         Pedido pedidoBD = pedidoRepository.getReferenceById(idPedido);
         productoValidator.validarProducto(productoBD);
         pedidoValidator.validarPedido(pedidoBD);
-        if(productoBD.getUnidades() <= cantidad) {
+        if(productoBD.getUnidades() < cantidad) {
             throw new IllegalArgumentException("Cantidad mayor a la disponible");
         }
         ProductoPedido nuevoProducto = new ProductoPedido();
@@ -67,7 +68,7 @@ public class ProductoPedidoService {
         validaciones.validarProductoPedido(productoBD);
         Producto productoOriginal = productoRepository.getReferenceById(productoBD.getIdProducto());
         productoValidator.validarProducto(productoOriginal);
-        if(productoOriginal.getUnidades() <= cantidad) {
+        if(cantidad > productoOriginal.getUnidades()) {
             throw new IllegalArgumentException("Cantidad mayor a la disponible");
         }
         productoBD.setCantidad(cantidad);
@@ -92,6 +93,7 @@ public class ProductoPedidoService {
         return productosBD;
     }
 
+    @Transactional
     public void comprarProductos(List<DetallesProductoDTO> productosCompra){
         validaciones.validarDetallesProductos(productosCompra);
         for(DetallesProductoDTO productoCompra : productosCompra){
@@ -99,6 +101,15 @@ public class ProductoPedidoService {
             ProductoPedido pedidoBD = repository.getReferenceById(productoCompra.getIdProducto());
             validaciones.validarProductoPedido(pedidoBD);
             pedidoBD.setPrecioVenta(productoCompra.getPrecio());
+            Producto productoComprado = productoRepository.getReferenceById(productoCompra.getIdProducto());
+            productoValidator.validarProducto(productoComprado);
+            int stock = productoComprado.getUnidades();
+            if(productoCompra.getCantidad() > stock) {
+                throw new IllegalArgumentException("Cantidad mayor a la disponible");
+            }
+            stock -= productoCompra.getCantidad();
+            productoComprado.setUnidades(stock);
+            productoRepository.save(productoComprado);
             repository.save(pedidoBD);
         }
     }
