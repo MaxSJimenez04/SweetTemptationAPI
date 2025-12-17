@@ -408,8 +408,8 @@ public class ProductoPedidoServiceTest {
     @Test
     void comprarProductos_Exito(){
         //Arrange
-        when(repository.getReferenceById(productoPedido.getIdProducto())).thenReturn(productoPedido);
-        when(repository.getReferenceById(productoPedido2.getIdProducto())).thenReturn(productoPedido2);
+        when(repository.getReferenceById(productoPedido.getId())).thenReturn(productoPedido);
+        when(repository.getReferenceById(productoPedido2.getId())).thenReturn(productoPedido2);
         when(productoRepository.getReferenceById(productoPedido.getIdProducto())).thenReturn(producto1);
         when(productoRepository.getReferenceById(productoPedido2.getIdProducto())).thenReturn(producto2);
         //Act
