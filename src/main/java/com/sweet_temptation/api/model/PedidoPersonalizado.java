@@ -1,44 +1,51 @@
 package com.sweet_temptation.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "PedidoPersonalizado")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class PedidoPersonalizado {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false)
-    private int idPedido;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idPedido", nullable = false)
+    private Pedido pedido;
 
-    @Column(length = 100)
+    @Column(length = 50)
     private String tamano;
 
-    @Column(length = 100)
+    @Column(length = 50)
     private String saborBizcocho;
 
-    @Column(length = 100)
+    @Column(length = 50)
     private String relleno;
 
-    @Column(length = 100)
+    @Column(length = 50)
     private String cobertura;
 
-    @Column(length = 100)
+    @Column(length = 500)
     private String especificaciones;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime fechaCompra;
+    @Column(length = 255)
+    private String imagen_Url;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
     private LocalDateTime fechaSolicitud;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idProducto", nullable = true)
-    private Producto producto;
+    @Column(length = 20)
+    private String telefonoContacto;
+
+    @Column(nullable = false)
+    private Integer estado;
+
+    public PedidoPersonalizado() {
+    }
 
     public int getId() {
         return id;
@@ -48,12 +55,13 @@ public class PedidoPersonalizado {
         this.id = id;
     }
 
-    public int getIdPedido() {
-        return idPedido;
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    public Pedido getPedido() {
+        return pedido;
     }
 
-    public void setIdPedido(int idPedido) {
-        this.idPedido = idPedido;
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
     }
 
     public String getTamano() {
@@ -96,12 +104,12 @@ public class PedidoPersonalizado {
         this.especificaciones = especificaciones;
     }
 
-    public LocalDateTime getFechaCompra() {
-        return fechaCompra;
+    public String getImagenUrl() {
+        return imagen_Url;
     }
 
-    public void setFechaCompra(LocalDateTime fechaCompra) {
-        this.fechaCompra = fechaCompra;
+    public void setImagenUrl(String imagenUrl) {
+        this.imagen_Url = imagenUrl;
     }
 
     public LocalDateTime getFechaSolicitud() {
@@ -110,5 +118,21 @@ public class PedidoPersonalizado {
 
     public void setFechaSolicitud(LocalDateTime fechaSolicitud) {
         this.fechaSolicitud = fechaSolicitud;
+    }
+
+    public String getTelefonoContacto() {
+        return telefonoContacto;
+    }
+
+    public void setTelefonoContacto(String telefonoContacto) {
+        this.telefonoContacto = telefonoContacto;
+    }
+
+    public Integer getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Integer estado) {
+        this.estado = estado;
     }
 }

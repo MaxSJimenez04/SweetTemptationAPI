@@ -38,6 +38,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/archivo/**").permitAll()
                         .requestMatchers("/error").permitAll()
+                        .requestMatchers("/api/pedidos-personalizados/**").permitAll()
                         .requestMatchers("/login.html", "/**.html", "/**.css", "/**.js").permitAll()
                         .anyRequest().authenticated()
                 )
