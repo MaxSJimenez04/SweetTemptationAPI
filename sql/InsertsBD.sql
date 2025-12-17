@@ -2,9 +2,9 @@ INSERT INTO Rol(rol) VALUES('Administrador');
 INSERT INTO Rol(rol) VALUES('Empleado');
 INSERT INTO Rol(rol) VALUES('Cliente');
 
-INSERT INTO Usuario(usuario, contrasena, nombre, apellidos, correo, direccion, telefono, fechaRegistro, idRol) VALUES('STA_MaxSoto', 'Admin123', 'Maximiliano', 'Soto Jiménez', 'maximiliano.soto.j@gmail.com', 'Av. Independencia #22, Colonia Insurgentes, Ciudad de México', '+522284246249', GETDATE(), 1);
-INSERT INTO Usuario(usuario, contrasena, nombre, apellidos, correo, direccion, telefono, fechaRegistro, idRol) VALUES('STE_LuisPerez', 'ContrasenaMuySegura', 'Luis', 'Pérez González','luis.perez@gmail.com', 'Calle Norte 2 #12, Colonia Centro, Puebla, Puebla', '+522225614821', GETDATE(), 2);
-INSERT INTO Usuario(usuario, contrasena, nombre, apellidos, correo, direccion, telefono, fechaRegistro, idRol) VALUES('TeresaSuarez1989', 'qwerty1024', 'Teresa', 'Álvarez Suárez', 'ts1989@gmail.com','Calle Hollywood #12-B Colonia Europa, Ensenada, Baja California', '+526332154981', GETDATE(), 3);
+INSERT INTO Usuario(usuario, contrasena, nombre, apellidos, correo, direccion, telefono, fechaRegistro, idRol) VALUES('STA_MaxSoto', '$2a$10$KV4MW5NgJsnfsO3XATiwcOewp6mmLnSA1njrKoFCAxsm9xmwZVnLG', 'Maximiliano', 'Soto Jimï¿½nez', 'maximiliano.soto.j@gmail.com', 'Av. Independencia #22, Colonia Insurgentes, Ciudad de Mï¿½xico', '+522284246249', GETDATE(), 1);
+INSERT INTO Usuario(usuario, contrasena, nombre, apellidos, correo, direccion, telefono, fechaRegistro, idRol) VALUES('STE_LuisPerez', '$2a$10$dm0NsBysOYfAzd9u29JlTOIgjCuzIvXAlajndc3HmnNQJFBpBTpfC', 'Luis', 'Pï¿½rez Gonzï¿½lez','luis.perez@gmail.com', 'Calle Norte 2 #12, Colonia Centro, Puebla, Puebla', '+522225614821', GETDATE(), 2);
+INSERT INTO Usuario(usuario, contrasena, nombre, apellidos, correo, direccion, telefono, fechaRegistro, idRol) VALUES('TeresaSuarez1989', '$2a$10$5PiWX2.SVzVWvBk9b8pBwOgJ9rbhDMDvTrqD9NkuLBfzWVCJCVAVG', 'Teresa', 'ï¿½lvarez Suï¿½rez', 'ts1989@gmail.com','Calle Hollywood #12-B Colonia Europa, Ensenada, Baja California', '+526332154981', GETDATE(), 3);
 
 
 INSERT INTO Categoria(nombre) VALUES('Pastel');
@@ -19,34 +19,34 @@ INSERT INTO Categoria(nombre) VALUES('Flan');
 INSERT INTO Categoria(nombre) VALUES('Otro');
 
 INSERT INTO Producto(nombre, descripcion,precio, disponible, unidades, fechaRegistro, categoria) VALUES('Pastel Chocolate 3Kg', 'Pastel de pan de chocolate, relleno de mermelada de fresa, cubierto de nutella, 1 piso', 125.00, 1, 12, GETDATE(), 1);
-INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Pastel Tres Leches', 'Pastel clásico de tres leches con crema batida y fresas frescas', 122.00, 1, 10, GETDATE(), 1);
-INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Pastel Red Velvet', 'Pan rojo aterciopelado con betún de queso crema', 270.00, 1, 8, GETDATE(), 1);
-INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Pastel de Zanahoria', 'Pan húmedo con nuez y glaseado de queso crema', 240.50, 1, 6, GETDATE(), 1);
-INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Pastel Vainilla Frutas', 'Pastel de vainilla con relleno de durazno y piña', 230.00, 1, 10, GETDATE(), 1);
+INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Pastel Tres Leches', 'Pastel clï¿½sico de tres leches con crema batida y fresas frescas', 122.00, 1, 10, GETDATE(), 1);
+INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Pastel Red Velvet', 'Pan rojo aterciopelado con betï¿½n de queso crema', 270.00, 1, 8, GETDATE(), 1);
+INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Pastel de Zanahoria', 'Pan hï¿½medo con nuez y glaseado de queso crema', 240.50, 1, 6, GETDATE(), 1);
+INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Pastel Vainilla Frutas', 'Pastel de vainilla con relleno de durazno y piï¿½a', 230.00, 1, 10, GETDATE(), 1);
 INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Cupcake de Chocolate', 'Cupcake de chocolate con glaseado de cacao', 20.50, 1, 30, GETDATE(), 2);
-INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Cupcake de Vainilla', 'Cupcake de vainilla con betún de mantequilla', 20.00, 1, 28, GETDATE(), 2);
-INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Cupcake Red Velvet', 'Cupcake con betún de queso crema', 32.00, 1, 25, GETDATE(), 2);
-INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Galleta Integral', 'Galleta de avena sin azúcar añadida', 10.00, 1, 22, GETDATE(), 3);
+INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Cupcake de Vainilla', 'Cupcake de vainilla con betï¿½n de mantequilla', 20.00, 1, 28, GETDATE(), 2);
+INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Cupcake Red Velvet', 'Cupcake con betï¿½n de queso crema', 32.00, 1, 25, GETDATE(), 2);
+INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Galleta Integral', 'Galleta de avena sin azï¿½car aï¿½adida', 10.00, 1, 22, GETDATE(), 3);
 INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Galleta Rellena de Cajeta', 'Galleta de mantequilla con relleno de cajeta', 10.60, 1, 18, GETDATE(), 3);
 INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Tarta de Frutas', 'Base de masa quebrada con crema pastelera y frutas frescas', 58.00, 1, 8, GETDATE(), 4);
-INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Tarta de Limón', 'Tarta con crema de limón y merengue', 57.50, 1, 6, GETDATE(), 4);
+INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Tarta de Limï¿½n', 'Tarta con crema de limï¿½n y merengue', 57.50, 1, 6, GETDATE(), 4);
 INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Tarta de Queso', 'Cheesecake con base de galleta y mermelada de fresa', 59.00, 1, 10, GETDATE(), 4);
 INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Tarta de Coco', 'Tarta con crema pastelera y coco rallado', 58.00, 1, 8, GETDATE(), 4);
 INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Dona con Chispas', 'Dona con glaseado y chispas de colores', 31.40, 1, 25, GETDATE(), 5);
-INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Dona Rellena de Cajeta', 'Dona rellena de cajeta con azúcar glas', 31.50, 1, 20, GETDATE(), 5);
+INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Dona Rellena de Cajeta', 'Dona rellena de cajeta con azï¿½car glas', 31.50, 1, 20, GETDATE(), 5);
 INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Dona de Fresa', 'Dona con cobertura rosa sabor fresa', 35.00, 1, 28, GETDATE(), 5);
 INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Dona con Nuez', 'Dona con glaseado de caramelo y trozos de nuez', 38.70, 1, 18, GETDATE(), 5);
 INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Dona de Maple', 'Dona cubierta con glaseado sabor maple', 32.00, 1, 22, GETDATE(), 5);
-INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Brownie Clásico', 'Brownie tradicional con textura húmeda y sabor intenso a cacao', 29.00, 1, 20, GETDATE(), 6);
+INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Brownie Clï¿½sico', 'Brownie tradicional con textura hï¿½meda y sabor intenso a cacao', 29.00, 1, 20, GETDATE(), 6);
 INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Brownie con Nuez', 'Brownie con trozos de nuez tostada', 28.20, 1, 18, GETDATE(), 6);
 INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Mousse de Chocolate', 'Postre cremoso de chocolate amargo', 160.00, 1, 8, GETDATE(), 7);
-INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Mousse de Mango', 'Postre frío con puré natural de mango', 155.50, 1, 8, GETDATE(), 7);
-INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Pay de Limón', 'Postre frío con galleta y crema de limón', 115.00, 1, 6, GETDATE(), 8);
-INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Mini Pay de Queso', 'Pequeños pays de queso con mermelada', 94.00, 1, 9, GETDATE(), 8);
-INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Flan Napolitano', 'Flan casero con caramelo líquido', 72.00, 1, 8, GETDATE(), 9);
-INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Chocoflan', 'Combinación de pastel de chocolate y flan', 77.00, 1, 6, GETDATE(), 9);
+INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Mousse de Mango', 'Postre frï¿½o con purï¿½ natural de mango', 155.50, 1, 8, GETDATE(), 7);
+INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Pay de Limï¿½n', 'Postre frï¿½o con galleta y crema de limï¿½n', 115.00, 1, 6, GETDATE(), 8);
+INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Mini Pay de Queso', 'Pequeï¿½os pays de queso con mermelada', 94.00, 1, 9, GETDATE(), 8);
+INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Flan Napolitano', 'Flan casero con caramelo lï¿½quido', 72.00, 1, 8, GETDATE(), 9);
+INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Chocoflan', 'Combinaciï¿½n de pastel de chocolate y flan', 77.00, 1, 6, GETDATE(), 9);
 INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Empanada de Cajeta', 'Empanada horneada con relleno de cajeta', 22.00, 1, 22, GETDATE(), 10);
-INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Churros', 'Porción de 4 churros con azúcar y canela', 15.00, 1, 20, GETDATE(), 10);
+INSERT INTO Producto(nombre, descripcion, precio, disponible, unidades, fechaRegistro, categoria) VALUES('Churros', 'Porciï¿½n de 4 churros con azï¿½car y canela', 15.00, 1, 20, GETDATE(), 10);
 
 INSERT INTO Pedido(fechaCompra, actual, total, estado, personalizado, idCliente) VALUES(GETDATE(), 1, 100.00, 1, 0, 3);
 INSERT INTO Pedido (fechaCompra, actual, total, estado, personalizado, idCliente) VALUES (GETDATE(), 0, 156.00, 1, 0, 3);
@@ -75,7 +75,7 @@ INSERT INTO ProductoPedido (cantidad, subtotal, idPedido, idProducto) VALUES (1,
 INSERT INTO ProductoPedido (cantidad, subtotal, idPedido, idProducto) VALUES (1, 72.00, 6, 26);
 INSERT INTO ProductoPedido (cantidad, subtotal, idPedido, idProducto) VALUES (1, 27.60, 6, 27);
 
-INSERT INTO PedidoPersonalizado(idPedido, cobertura, especificaciones, relleno, saborBizcocho, tamano, fechaCompra, fechaSolicitud) VALUES(7, 'Chocolate', 'Frase "Feliz cumpleaños"', 'Durazno', 'Vainilla', '2 pisos', 2025-11-15, GETDATE());
+INSERT INTO PedidoPersonalizado(idPedido, cobertura, especificaciones, relleno, saborBizcocho, tamano, fechaCompra, fechaSolicitud) VALUES(7, 'Chocolate', 'Frase "Feliz cumpleaï¿½os"', 'Durazno', 'Vainilla', '2 pisos', 2025-11-15, GETDATE());
 
 
 INSERT INTO Pago(idPedido, tipoPago, total) VALUES(2, 'Efectivo', 156.00);

@@ -10,3 +10,4 @@ public interface PasswordHistoryRepository extends JpaRepository<PasswordHistory
     List<PasswordHistory> findByUsuarioOrderByFechaCreacionDesc(Usuario usuario);
 }
 
+

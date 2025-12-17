@@ -4,6 +4,7 @@ import com.sweet_temptation.api.dto.user.UserRequestDTO;
 import com.sweet_temptation.api.dto.user.UserResponseDTO;
 import com.sweet_temptation.api.model.Usuario;
 import com.sweet_temptation.api.repository.UsuarioRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,9 +16,11 @@ import java.util.stream.Collectors;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<UserResponseDTO> getAllUsuarios() {
@@ -45,7 +48,7 @@ public class UsuarioService {
         usuario.setNombre(request.getNombre());
         usuario.setApellidos(request.getApellidos());
         usuario.setCorreo(request.getCorreo());
-        usuario.setContrasena(request.getContrasena());
+        usuario.setContrasena(passwordEncoder.encode(request.getContrasena()));
         usuario.setDireccion(request.getDireccion());
         usuario.setTelefono(request.getTelefono());
         usuario.setIdRol(request.getIdRol());
@@ -80,7 +83,7 @@ public class UsuarioService {
             usuario.setApellidos(request.getApellidos());
         }
         if (request.getContrasena() != null && !request.getContrasena().isEmpty()) {
-            usuario.setContrasena(request.getContrasena());
+            usuario.setContrasena(passwordEncoder.encode(request.getContrasena()));
         }
         if (request.getDireccion() != null) {
             usuario.setDireccion(request.getDireccion());

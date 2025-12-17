@@ -65,11 +65,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    @SuppressWarnings("deprecation")
     public PasswordEncoder passwordEncoder() {
-        // Para desarrollo: contraseñas en texto plano (NO usar en producción)
-        return org.springframework.security.crypto.password.NoOpPasswordEncoder.getInstance();
-        // Para producción descomentar: return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
