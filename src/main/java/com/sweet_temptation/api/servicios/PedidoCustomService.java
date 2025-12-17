@@ -16,7 +16,7 @@ public class PedidoCustomService {
 
     public PedidoPersonalizado guardar(PedidoPersonalizado pedido) {
         pedido.setFechaSolicitud(LocalDateTime.now());
-        pedido.setEstado(0); // 0 = creado
+        pedido.setEstado(0);
         return repository.save(pedido);
     }
 
@@ -32,7 +32,7 @@ public class PedidoCustomService {
         PedidoPersonalizado pedido = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
 
-        pedido.setEstado(2); // 2 = en revisión
+        pedido.setEstado(2);
         repository.save(pedido);
     }
 
@@ -40,7 +40,7 @@ public class PedidoCustomService {
         PedidoPersonalizado pedido = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
 
-        pedido.setEstado(3); // 3 = aceptado
+        pedido.setEstado(3);
         repository.save(pedido);
     }
 
@@ -48,7 +48,7 @@ public class PedidoCustomService {
         PedidoPersonalizado pedido = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
 
-        pedido.setEstado(4); // 4 = rechazado
+        pedido.setEstado(4);
         repository.save(pedido);
     }
 }
