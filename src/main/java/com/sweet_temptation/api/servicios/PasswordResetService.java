@@ -82,15 +82,13 @@ public class PasswordResetService {
     }
 
     private boolean isPasswordUsedBefore(Usuario usuario, String nuevaContrasena) {
-        String nuevaContrasenaEncoded = passwordEncoder.encode(nuevaContrasena);
-        
-        if (nuevaContrasenaEncoded.equals(usuario.getContrasena())) {
+        if (passwordEncoder.matches(nuevaContrasena, usuario.getContrasena())) {
             return true;
         }
 
         List<PasswordHistory> historial = passwordHistoryRepository.findByUsuarioOrderByFechaCreacionDesc(usuario);
         for (PasswordHistory ph : historial) {
-            if (nuevaContrasenaEncoded.equals(ph.getContrasenaHash())) {
+            if (passwordEncoder.matches(nuevaContrasena, ph.getContrasenaHash())) {
                 return true;
             }
         }

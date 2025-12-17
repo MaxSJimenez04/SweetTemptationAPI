@@ -61,6 +61,7 @@ public class AuthController {
                     usuarioCompleto.getId(),
                     usuarioCompleto.getNombre(),
                     usuarioCompleto.getCorreo(),
+                    usuarioCompleto.getTelefono(),
                     rol
             );
             return ResponseEntity.ok(response);
