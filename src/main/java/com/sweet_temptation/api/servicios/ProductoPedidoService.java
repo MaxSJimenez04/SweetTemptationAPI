@@ -98,7 +98,7 @@ public class ProductoPedidoService {
         validaciones.validarDetallesProductos(productosCompra);
         for(DetallesProductoDTO productoCompra : productosCompra){
             validaciones.validarDetalleProducto(productoCompra);
-            ProductoPedido pedidoBD = repository.getReferenceById(productoCompra.getIdProducto());
+            ProductoPedido pedidoBD = repository.getReferenceById(productoCompra.getId());
             validaciones.validarProductoPedido(pedidoBD);
             pedidoBD.setPrecioVenta(productoCompra.getPrecio());
             Producto productoComprado = productoRepository.getReferenceById(productoCompra.getIdProducto());
