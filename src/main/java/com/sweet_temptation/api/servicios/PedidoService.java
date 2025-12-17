@@ -181,6 +181,24 @@ public class PedidoService {
         }
         return pedidosDTO;
     }
+
+    public List<PedidoDTO> consultarHistorialCliente(int idCliente) {
+        validaciones.validarIDCliente(idCliente);
+        // Buscamos pedidos que NO sean el actual y tengan estado 3 (Pagado) o 4 (Cancelado)
+        List<Pedido> pedidosBD = pedidoRepository.findByIdClienteAndActualFalseAndEstadoIn(
+                idCliente, Arrays.asList(3, 4));
+
+        List<PedidoDTO> historial = new ArrayList<>();
+        if (pedidosBD != null) {
+            for (Pedido pedido : pedidosBD) {
+                historial.add(new PedidoDTO(
+                        pedido.getId(), pedido.getFechaCompra(), pedido.getActual(),
+                        pedido.getTotal(), pedido.getEstado(), pedido.getPersonalizado(),
+                        pedido.getIdCliente()));
+            }
+        }
+        return historial;
+    }
 }
 
 

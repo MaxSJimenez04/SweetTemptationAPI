@@ -26,4 +26,6 @@ public interface PedidoRepository extends JpaRepository<Pedido,Integer> {
             LocalDateTime fechaInicio,
             LocalDateTime fechaFin
     );
+
+    List<Pedido> findByIdClienteAndActualFalseAndEstadoIn(int idCliente, List<Integer> estados);
 }

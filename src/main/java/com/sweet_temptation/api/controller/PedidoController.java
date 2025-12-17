@@ -218,4 +218,26 @@ public class PedidoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(rte.getMessage());
         }
     }
+
+    // Dentro de PedidoController.java
+
+    @GetMapping("/historial")
+    public ResponseEntity<?> getHistorial(@RequestParam int idCliente) {
+        try {
+            List<PedidoDTO> historial = pedidoService.consultarHistorialCliente(idCliente);
+
+            if (historial.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(historial);
+
+        } catch (IllegalArgumentException iae) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
+        } catch (NoSuchElementException nsee) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nsee.getMessage());
+        } catch (RuntimeException rte) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(rte.getMessage());
+        }
+    }
 }
