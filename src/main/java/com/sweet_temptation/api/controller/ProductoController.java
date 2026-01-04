@@ -95,4 +95,21 @@ public class ProductoController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El producto con el nombre '" + nombre + "' no fue encontrado.");
         }
     }
+
+    // ==== Para la parte de movil ====
+    @PostMapping(path = "/nuevo-movil", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> crearProductoMovil(
+            @RequestPart("producto") ProductoDTO nuevoProducto,
+            @RequestPart("imagen") MultipartFile imagen) {
+        try {
+                int idProductoNuevo = productoService.crearProducto(nuevoProducto, imagen);
+            return ResponseEntity.status(HttpStatus.CREATED).body(idProductoNuevo);
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error en el registro móvil: " + e.getMessage());
+        }
+    }
 }
