@@ -229,4 +229,41 @@ public class ProductoService {
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
+
+    @Transactional
+    public int crearProducto(ProductoDTO producto, MultipartFile imagen) {
+        validaciones.validarProductoNuevo(producto);
+
+        Producto nuevo = new Producto();
+        nuevo.setNombre(producto.getNombre());
+        nuevo.setDescripcion(producto.getDescripcion());
+        nuevo.setPrecio(producto.getPrecio());
+        nuevo.setDisponible(producto.getDisponible());
+        nuevo.setUnidades(producto.getUnidades());
+        nuevo.setCategoria(producto.getCategoria());
+        nuevo.setFechaRegistro(LocalDateTime.now());
+        nuevo.setFechaModificacion(LocalDateTime.now());
+
+        Producto guardado = productoRepository.save(nuevo);
+
+        if (imagen != null && !imagen.isEmpty()) {
+            try {
+                byte[] datos = imagen.getBytes();
+                String nombreOriginal = imagen.getOriginalFilename();
+                String extension = "jpg"; // valor por defecto
+
+                if (nombreOriginal != null && nombreOriginal.lastIndexOf('.') != -1) {
+                    extension = nombreOriginal.substring(nombreOriginal.lastIndexOf('.') + 1);
+                }
+
+                archivoService.reemplazarImagenProducto(guardado.getId(), datos, extension);
+
+            } catch (Exception e) {
+                throw new RuntimeException("Error al procesar la imagen del nuevo producto: " + e.getMessage());
+            }
+        }
+
+        validaciones.validarProducto(guardado);
+        return guardado.getId();
+    }
 }
