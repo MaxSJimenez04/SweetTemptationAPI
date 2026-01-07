@@ -30,26 +30,19 @@ public class EstadisticasValidator {
     }
 
 
-    public int validarEstadoVenta(String estado){
-        if(estado == null){
-            throw new IllegalArgumentException("El estado no puede ser nulo");
-        }
+    public int validarEstadoVenta(String estado) {
+        if (estado == null) throw new IllegalArgumentException("El estado no puede ser nulo");
 
         String normalizado = estado.trim().toLowerCase();
 
-        if (normalizado.isEmpty()) {
+        if (normalizado.isEmpty() || normalizado.equals("todas")) {
             return 0;
         }
 
         switch (normalizado) {
-            case "completada":
-            case "completado":
-                return 3;
-            case "cancelada":
-            case "cancelado":
-                return 4;
-            case "pendiente":
-                return 2;
+            case "completada": return 3;
+            case "cancelada": return 4;
+            case "pendiente": return 2;
             default:
                 throw new IllegalArgumentException("Estado de venta inválido: " + estado);
         }

@@ -56,37 +56,29 @@ public class EstadisticasService {
         List<Pedido> pedidos;
 
         if (estado == 0) {
-            pedidos = estadisticasRepository.findByFechaCompraBetween(inicioDateTime, finDateTime);
+            pedidos = estadisticasRepository.findByFechaCompraBetweenAndEstadosValidos(inicioDateTime, finDateTime);
         } else {
-            pedidos = estadisticasRepository
-                    .findByEstadoAndFechaCompra(estado, inicioDateTime, finDateTime);
+            pedidos = estadisticasRepository.findByEstadoAndFechaCompra(estado, inicioDateTime, finDateTime);
         }
 
         if (pedidos == null || pedidos.isEmpty()) {
-            throw new NoSuchElementException("No se encontraron ventas en el rango y estado indicados");
+            throw new NoSuchElementException("No se encontraron ventas para los criterios seleccionados");
         }
-        //Para verificar desde consola
-        System.out.println("--- Mostrando Pedidos ---");
+
+        System.out.println("--- Procesando " + pedidos.size() + " pedidos para el reporte ---");
 
         return pedidos.stream()
                 .map(p -> {
-                    int idRolObtenido = 2;
+                    int idRolObtenido = 3;
                     int idClientePedido = p.getIdCliente();
 
                     if (idClientePedido > 0) {
                         Optional<Integer> idRolOpt = usuarioRepository.findIdRolByIdUsuario(idClientePedido);
 
-                        System.out.println("Pedido ID: " + p.getId() + " | idCliente: " + idClientePedido + " | JPQL isPresent: " + idRolOpt.isPresent());
-
                         if (idRolOpt.isPresent()) {
                             idRolObtenido = idRolOpt.get();
-                        } else {
-                            idRolObtenido = 3;
                         }
                     }
-
-                    System.out.println("Pedido ID: " + p.getId() + " | ID ROL: " + idRolObtenido);
-
                     return new PedidoDTO(
                             p.getId(),
                             p.getFechaCompra(),
