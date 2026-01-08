@@ -3,18 +3,14 @@ package com.sweet_temptation.api;
 import com.sweet_temptation.api.dto.PedidoDTO;
 import com.sweet_temptation.api.model.Pedido;
 import com.sweet_temptation.api.repository.EstadisticasRepository;
-import com.sweet_temptation.api.repository.PedidoRepository;
 import com.sweet_temptation.api.repository.UsuarioRepository;
 import com.sweet_temptation.api.servicios.EstadisticasService;
-import com.sweet_temptation.api.servicios.PedidoService;
 import com.sweet_temptation.api.validaciones.EstadisticasValidator;
-import com.sweet_temptation.api.validaciones.PedidoValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.cglib.core.Local;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -29,121 +25,98 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-
 @ExtendWith(MockitoExtension.class)
 public class EstadisticaVentasTest {
+
     @Mock
     private EstadisticasRepository estadisticasRepository;
 
     @Mock
     private EstadisticasValidator validaciones;
 
+    @Mock
+    private UsuarioRepository usuarioRepository;
+
     @InjectMocks
     private EstadisticasService estadisticasService;
 
-    @Mock
-    private UsuarioRepository usuarioRepository; // para el rol
-
-
-    //====== PRUEBAS UNITARIAS ======
-
-    // Prueba: consultar todas las ventas
     @Test
     void consultarVentas_Exito() {
+        // Datos de entrada
         LocalDate inicio = LocalDate.of(2025, 1, 1);
         LocalDate fin = LocalDate.of(2025, 1, 31);
+        String estadoTexto = "completada";
         int idCliente = 10;
-        int idRolEsperado = 3; // Cliente
+        int idRolEsperado = 3;
 
         Pedido pedido = new Pedido();
         pedido.setId(1);
         pedido.setTotal(BigDecimal.valueOf(200));
-        pedido.setEstado(3);
+        pedido.setEstado(3); // 3 = Completada
         pedido.setFechaCompra(LocalDateTime.now());
-        pedido.setActual(false);
-        pedido.setPersonalizado(false);
         pedido.setIdCliente(idCliente);
 
-        doNothing().when(validaciones).validarRangoFecha(any(LocalDateTime.class), any(LocalDateTime.class));
-        when(validaciones.validarEstadoVenta("completada")).thenReturn(3);
+        doNothing().when(validaciones).validarRangoFecha(any(), any());
+        when(validaciones.validarEstadoVenta(estadoTexto)).thenReturn(3);
 
-        when(estadisticasRepository.findByEstadoAndFechaCompra(
-                eq(3),
-                any(LocalDateTime.class),
-                any(LocalDateTime.class)
-        )).thenReturn(List.of(pedido));
+        when(estadisticasRepository.findByEstadoAndFechaCompra(eq(3), any(), any()))
+                .thenReturn(List.of(pedido));
 
         when(usuarioRepository.findIdRolByIdUsuario(idCliente)).thenReturn(Optional.of(idRolEsperado));
 
-        List<PedidoDTO> resultado = estadisticasService.consultarVentasPorRangoYEstado(
-                inicio, fin, "completada"
-        );
+        List<PedidoDTO> resultado = estadisticasService.consultarVentasPorRangoYEstado(inicio, fin, estadoTexto);
 
         assertFalse(resultado.isEmpty());
-        assertEquals(idRolEsperado, resultado.get(0).getIdRol()); // Verifica que el rol es 3
+        assertEquals(idRolEsperado, resultado.get(0).getIdRol());
         verify(estadisticasRepository, times(1)).findByEstadoAndFechaCompra(eq(3), any(), any());
-        verify(usuarioRepository, times(1)).findIdRolByIdUsuario(idCliente); // Verifica que se consultó el rol
     }
 
-    // Prueba: consultar todas las ventas canceladas
     @Test
-    void consultarVentas_EstadoTodas(){
-        LocalDate inicio = LocalDate.of(2025,12,1);
-        LocalDate fin = LocalDate.of(2025,12,11);
-        String estado = ""; // cadena vacia para todas
+    void consultarVentas_EstadoTodas() {
+        // Datos de entrada
+        LocalDate inicio = LocalDate.of(2025, 12, 1);
+        LocalDate fin = LocalDate.of(2025, 12, 11);
+        String estadoTexto = "Todas"; // El valor que viene del Spinner
         int idCliente = 5;
 
         Pedido pedido = new Pedido();
         pedido.setId(2);
-        pedido.setEstado(4); // Cancelada
+        pedido.setEstado(4); // Cancelada (válida para 'Todas')
         pedido.setIdCliente(idCliente);
 
         doNothing().when(validaciones).validarRangoFecha(any(), any());
-        when(validaciones.validarEstadoVenta(estado)).thenReturn(0);
+        when(validaciones.validarEstadoVenta(estadoTexto)).thenReturn(0);
 
-        when(estadisticasRepository.findByFechaCompraBetween(
-                any(LocalDateTime.class),
-                any(LocalDateTime.class)
-        )).thenReturn(List.of(pedido));
+        when(estadisticasRepository.findByFechaCompraBetweenAndEstadosValidos(any(), any()))
+                .thenReturn(List.of(pedido));
 
         when(usuarioRepository.findIdRolByIdUsuario(idCliente)).thenReturn(Optional.of(3));
 
-        List<PedidoDTO> resultado = estadisticasService.consultarVentasPorRangoYEstado(
-                inicio, fin, estado
-        );
+        List<PedidoDTO> resultado = estadisticasService.consultarVentasPorRangoYEstado(inicio, fin, estadoTexto);
 
         assertFalse(resultado.isEmpty());
+        verify(estadisticasRepository, times(1)).findByFechaCompraBetweenAndEstadosValidos(any(), any());
 
-        // para verificar el metodo correcto
-        verify(estadisticasRepository, times(1)).findByFechaCompraBetween(any(), any());
-
-        verify(estadisticasRepository, never()).findByEstadoAndFechaCompra(anyInt(), any(), any());
+        verify(estadisticasRepository, never()).findByFechaCompraBetween(any(), any());
     }
 
-    // Prueba: excepcion - sin resultados
     @Test
     void consultarVentas_SinResultados_Excepcion() {
         LocalDate inicio = LocalDate.of(2025, 1, 1);
         LocalDate fin = LocalDate.of(2025, 1, 31);
-        String estado = "pendiente";
+        String estadoTexto = "Todas";
 
         doNothing().when(validaciones).validarRangoFecha(any(), any());
-        when(validaciones.validarEstadoVenta(estado)).thenReturn(2);
+        when(validaciones.validarEstadoVenta(estadoTexto)).thenReturn(0);
 
-        when(estadisticasRepository.findByEstadoAndFechaCompra(
-                eq(2),
-                any(LocalDateTime.class),
-                any(LocalDateTime.class)
-        )).thenReturn(Collections.emptyList());
+        when(estadisticasRepository.findByFechaCompraBetweenAndEstadosValidos(any(), any()))
+                .thenReturn(Collections.emptyList());
 
-        // excepcion 404
+        // Verificación de lanzamiento de excepción NoSuchElementException (404)
         assertThrows(NoSuchElementException.class, () -> {
-            estadisticasService.consultarVentasPorRangoYEstado(inicio, fin, estado);
+            estadisticasService.consultarVentasPorRangoYEstado(inicio, fin, estadoTexto);
         });
 
-        verify(estadisticasRepository, times(1)).findByEstadoAndFechaCompra(eq(2), any(), any());
-
-       verify(usuarioRepository, never()).findIdRolByIdUsuario(anyInt());
+        verify(usuarioRepository, never()).findIdRolByIdUsuario(anyInt());
     }
-
 }
